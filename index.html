@@ -1953,6 +1953,7 @@ body.mgr a.navlink.ca-only{display:none!important}
       <div class="h1">🛡 チーム管理 <span class="pill">管理者ビュー</span></div>
       <p class="sub" style="margin:-4px 0 14px;color:var(--muted)">5名のCA（各80名担当・計400名）の稼働・実績・面談品質を統括し、新規候補者を最適に配分します。</p>
       <div id="teamKpi"></div>
+      <div class="card"><div class="hd"><h3>🔔 CA別 アラート</h3><span class="sub">要対応の内訳</span><span class="right"><span class="chip" style="background:#FBE4E4;color:#c0392b" id="teamAlertTotal">—</span></span></div><div class="bd" id="teamAlerts"></div></div>
       <div class="card"><div class="hd"><h3>🧮 候補者の振り分け</h3><span class="sub">AI推奨＋負荷分散</span><span class="right"><span class="chip new">振り分け待ち 6名</span></span></div><div class="bd" id="teamAssign"></div></div>
       <div class="card"><div class="hd"><h3>👥 CA別 担当状況（各80名）</h3><span class="sub">過剰・滞留を検知</span></div><div class="bd" id="teamLoad"></div></div>
       <div class="card"><div class="hd"><h3>🎧 面談品質モニタリング</h3><span class="sub">低スコアを自動フラグ</span></div><div class="bd" id="teamQuality"></div></div>
@@ -3417,7 +3418,31 @@ body.mgr a.navlink.ca-only{display:none!important}
     {ca:'佐藤 健',  cand:'高橋 直人',mid:'HX-2026-0004',score:85,emo:'高',flag:false,note:'良好'},
     {ca:'伊藤 拓也',cand:'鈴木 涼',  mid:'HX-2026-0003',score:80,emo:'中',flag:false,note:'標準的'}
   ];
+  function openCaAlerts(caName){ mgrFilter={alert:'hi',ca:caName,stage:'',job:'',q:''}; go('list'); }
+  function buildTeamAlerts(){
+    var el=document.getElementById('teamAlerts'); if(!el)return;
+    var totalHi=0,totalMid=0;
+    var html=TEAM_CAS.map(function(c){
+      var hi=c.hi||0, mid=c.mid||0; totalHi+=hi; totalMid+=mid;
+      var items=[];
+      if(hi>0){ var h1=Math.ceil(hi/2), h2=hi-h1; if(h1>0)items.push(['#c0392b','🔴 長期フォロー漏れ（7日以上未接触）',h1]); if(h2>0)items.push(['#c0392b','🔴 一次結果待ち（3営業日超）',h2]); }
+      if(mid>0){ var m1=Math.ceil(mid/2), m2=mid-m1; if(m1>0)items.push(['#8a5a00','🟡 面談後の書類化 未着手',m1]); if(m2>0)items.push(['#8a5a00','🟡 二次面談 日程未確定',m2]); }
+      items.push(['#0d6a9a','🔵 未読メッセージ',(c.load%3)+1]);
+      var border=hi>0?'var(--danger)':(mid>0?'#E8A33D':'var(--ok)');
+      var rows=items.map(function(it){return '<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0"><span style="color:'+it[0]+'">'+it[1]+'</span><b>'+it[2]+'</b></div>';}).join('');
+      return '<div style="border:1px solid var(--line);border-left:4px solid '+border+';border-radius:10px;padding:10px 12px;min-width:230px;flex:1">'
+        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b><span class="miniavatar">'+c.ini+'</span>'+c.name+'</b>'
+        +'<span style="margin-left:auto;font-size:12px">🔴<b>'+hi+'</b> 🟡<b>'+mid+'</b></span></div>'
+        +rows
+        +'<button class="btn ghost sm" style="width:100%;margin-top:8px" onclick="openCaAlerts(\''+c.name+'\')">この担当の要対応を一覧で確認 →</button>'
+        +'</div>';
+    }).join('');
+    el.innerHTML='<div style="display:flex;gap:10px;flex-wrap:wrap">'+html+'</div>'
+      +'<p style="font-size:12px;color:var(--muted);margin:10px 0 0">💡 🔴が多いCAは優先フォロー。ボタンからチーム候補者一覧を「担当CA＋迅速アラート」で絞り込んで確認できます。</p>';
+    var tt=document.getElementById('teamAlertTotal'); if(tt)tt.textContent='要対応 🔴'+totalHi+' ・ 🟡'+totalMid;
+  }
   function buildTeamMgmt(){
+    buildTeamAlerts();
     var tot=TEAM_CAS.reduce((a,c)=>a+c.load,0);
     var off=TEAM_CAS.reduce((a,c)=>a+c.offer,0);
     var avg=Math.round(TEAM_CAS.reduce((a,c)=>a+c.score,0)/TEAM_CAS.length);
