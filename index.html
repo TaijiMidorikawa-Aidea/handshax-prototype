@@ -123,10 +123,16 @@
   .ev{margin:1px 3px;border-radius:6px;padding:3px 7px;font-size:11.5px;line-height:1.3;overflow:hidden;z-index:2;cursor:pointer;border-left:3px solid}
   .ev .t{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ev .s{font-size:10px;opacity:.85}
-  .ev.mtg{background:#E1F1FA;border-color:#0095D4;color:#33356e}
+  .ev.mtg{background:#EEF1F5;border-color:#8894a3;color:#48525e}
   .ev.intv{background:#e0f3f1;border-color:#0e7c86;color:#0a5258}
+  .ev.intv1{background:#E1F1FA;border-color:#0095D4;color:#0d5b86}
+  .ev.intv2{background:#DCF3EF;border-color:#0E9E86;color:#0a6b5a}
+  .ev.intv3{background:#FDEBD8;border-color:#E8823A;color:#8a4a12}
   .ev.busy{background:#fbe9e7;border-color:#d9534f;color:#9b2f2b}
   .ev.free{background:#eef1f8;border-color:#9aa3c7;color:#5b6285;border-style:dashed;border-left-style:solid}
+  .ev.after{background:#EFE8FA;border-color:#7C5CBF;color:#4a2f8a}
+  .ev.free{cursor:pointer}
+  .ev.free:hover{background:#e6ecfb;border-color:#0095D4;color:#0d6a9a}
 
   /* month */
   .mo-head{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--line)}
@@ -139,8 +145,12 @@
   .mo-cell.today .mn{background:#0095D4;color:#fff}
   .mo-cell.out{background:#f7f8fa} .mo-cell.out .mn{color:#b6c0cc}
   .mo-ev{font-size:10.5px;border-radius:4px;padding:1px 6px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid}
-  .mo-ev.mtg{background:#E1F1FA;border-color:#0095D4;color:#33356e}
+  .mo-ev.mtg{background:#EEF1F5;border-color:#8894a3;color:#48525e}
   .mo-ev.intv{background:#e0f3f1;border-color:#0e7c86;color:#0a5258}
+  .mo-ev.intv1{background:#E1F1FA;border-color:#0095D4;color:#0d5b86}
+  .mo-ev.intv2{background:#DCF3EF;border-color:#0E9E86;color:#0a6b5a}
+  .mo-ev.intv3{background:#FDEBD8;border-color:#E8823A;color:#8a4a12}
+  .mo-ev.after{background:#EFE8FA;border-color:#7C5CBF;color:#4a2f8a}
   .mo-ev.free{background:#eef1f8;border-color:#9aa3c7;color:#5b6285}
   .mo-more{font-size:10px;color:var(--sub);margin-top:2px}
   #mainwrap.mobile .cal-range{min-width:0}
@@ -451,7 +461,7 @@
   .msg .bub{max-width:78%;padding:9px 13px;border-radius:14px;font-size:13px;box-shadow:0 1px 1px rgba(0,0,0,.08)}
   .msg.them .bub{background:#fff;border-top-left-radius:4px}
   .msg.me{justify-content:flex-end}
-  .msg.me .bub{background:#8DE055;border-top-right-radius:4px}
+  .msg.me .bub{background:#0095D4;color:#fff;border-top-right-radius:4px}
   .msg .time{font-size:10px;color:#e8eef2;align-self:flex-end;margin:0 6px}
   .chat.biz{background:#dfe6ee}
   .chat.biz .msg.me .bub{background:#0095D4;color:#fff}
@@ -648,6 +658,46 @@
   .cascore .tag{flex-shrink:0;font-size:10px;font-weight:800;color:#1d6cc0;background:#fff;border:1px solid #cfe0f0;border-radius:6px;padding:2px 7px}
   .cascore b{color:#1d6cc0}
 </style>
+<style>
+/* 役割別表示 */
+.mgr-only{display:none!important}
+body.mgr a.navlink.mgr-only{display:flex!important}
+body.mgr h6.mgr-only{display:block!important}
+body.mgr a.navlink.ca-only{display:none!important}
+.role-toggle{display:inline-flex;background:#0d2431;border:1px solid #24506a;border-radius:20px;overflow:hidden;margin-right:8px}
+.role-toggle button{background:transparent;color:#bcd7e6;border:0;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.role-toggle button.on{background:#0095D4;color:#fff}
+.tm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.tm-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tm-tbl th,.tm-tbl td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+.tm-tbl th{color:var(--muted);font-weight:700;font-size:11.5px}
+.tm-bar{height:8px;border-radius:6px;background:#e9eef2;overflow:hidden;min-width:90px}
+.tm-bar>i{display:block;height:100%;border-radius:6px}
+.tm-st{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px}
+.tm-st.ok{background:#E1F1FA;color:#0d6a9a}.tm-st.free{background:#E8F6EE;color:#1e7e46}
+.tm-st.over{background:#FBE4E4;color:#c0392b}.tm-st.stag{background:#FCF0D9;color:#8a5a00}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;letter-spacing:.3px}
+</style>
+<style>
+#listTable th{position:sticky;top:0;background:#fff;z-index:2;box-shadow:0 1px 0 var(--line)}
+#listTable th.sortable{cursor:pointer;user-select:none;white-space:nowrap}
+#listTable th.sortable:hover{background:#eef6fb;color:#0d6a9a}
+#listTable th.sorted{color:#0095D4;background:#EAF6FC}
+#listTable th .arw{font-size:10px;margin-left:3px}
+.qsort{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.qsort .qlab{font-size:12px;color:var(--sub);font-weight:700;margin-right:2px}
+.qsort .qchip{border:1px solid var(--line);background:#fff;border-radius:16px;padding:4px 11px;font-size:12px;cursor:pointer;color:var(--ink)}
+.qsort .qchip:hover{border-color:#0095D4;color:#0d6a9a}
+.qsort .qchip.on{background:#0095D4;border-color:#0095D4;color:#fff;font-weight:700}
+.qsort .qdir{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 9px;font-size:12px;cursor:pointer;color:var(--ink)}
+</style>
+<style>
+.lfilter{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.lfilter select,.lfilter input{border:1px solid var(--line);border-radius:16px;padding:5px 11px;font-size:12px;font-family:inherit;background:#fff}
+.lfilter input.search{min-width:200px}
+.lfilter .lclear{border:1px solid var(--line);background:#fff;border-radius:16px;padding:5px 11px;font-size:12px;cursor:pointer;color:var(--ink)}
+.lfilter .lcount{font-size:12px;color:var(--sub);margin-left:auto;font-weight:600}
+</style>
 </head>
 <body>
 
@@ -655,11 +705,12 @@
   <div class="logo"><span class="mark">⬢</span><span style="display:flex;flex-direction:column;line-height:1.05">Handshax<small style="font-size:9px;font-weight:500;color:#9fc7dd;letter-spacing:.3px">The right match, faster.</small></span></div>
   <span class="tag">面談支援アプリ / プロトタイプ</span>
   <div class="spacer"></div>
+  <div class="role-toggle"><button id="rtCA" class="on" onclick="setRole('ca')">👤 一般CA</button><button id="rtMgr" onclick="setRole('mgr')">🛡 管理者</button></div>
   <div class="device-toggle">
     <button id="dtPC" class="on" onclick="setDevice('pc')">🖥 PC</button>
     <button id="dtMB" onclick="setDevice('mobile')">📱 スマホ</button>
   </div>
-  <div class="who"><span class="avatar">緑</span>緑川 治士｜CA</div>
+  <div class="who" id="whoChip"><span class="avatar" id="whoAv">緑</span><span id="whoLabel">緑川 治士｜CA（担当 80名）</span></div>
 </div>
 
 <div id="mainwrap">
@@ -667,16 +718,21 @@
   <!-- Sidebar -->
   <nav class="nav">
     <h6>業務</h6>
-    <a class="navlink on" data-s="dash" onclick="go('dash')" title="本日の面談3件・対応待ちあり"><span class="ic">📊</span>ダッシュボード<span class="badge red">3</span></a>
-    <a class="navlink" data-s="pipeline" onclick="go('pipeline')" title="振り分け待ちの新規候補者 6名"><span class="ic">🗂</span>候補者振り分け<span class="badge">6</span></a>
+    <a class="navlink on" data-s="dash" onclick="go('dash')" title="本日の面談5件・対応待ちあり"><span class="ic">📊</span>ダッシュボード<span class="badge red">3</span></a>
+    <a class="navlink mgr-only" data-s="pipeline" onclick="go('pipeline')" title="振り分け待ちの新規候補者 6名"><span class="ic">🗂</span>候補者振り分け<span class="badge">6</span></a>
     <a class="navlink" data-s="list" onclick="go('list')" title="書類未送付2件・一次落選1件（要対応）"><span class="ic">👤</span>候補者（一覧・詳細）<span class="badge red">3</span></a>
-    <a class="navlink" data-s="schedule" onclick="go('schedule')" title="日程調整待ち 3件"><span class="ic">📅</span>スケジュール調整<span class="badge">3</span></a>
+    <a class="navlink ca-only" data-s="schedule" onclick="go('schedule')" title="日程調整待ち 3件"><span class="ic">📅</span>スケジュール調整<span class="badge">3</span></a>
+    <h6 class="mgr-only">マネジメント</h6>
+    <a class="navlink mgr-only" data-s="team" onclick="go('team')" title="CA5名の統括・振り分け"><span class="ic">🛡</span>チーム管理<span class="badge">5</span></a>
+    <a class="navlink mgr-only" data-s="teamcal" onclick="go('teamcal')" title="チーム5名の日程"><span class="ic">🗓</span>チーム日程</a>
     <h6>面談</h6>
     <a class="navlink" data-s="room" onclick="go('room')" title="面談 録画中・本日3件"><span class="ic">🎥</span>面談ルーム<span class="badge live" id="navRec"><span class="dot"></span>REC</span></a>
     <a class="navlink" data-s="line" onclick="go('line')" title="未読メッセージ 2件"><span class="ic">💬</span>メッセージ<span class="badge red">2</span></a>
     <h6>マッチング</h6>
     <a class="navlink" data-s="match" onclick="go('match')" title="二次面談 調整中・要フォロー 1件"><span class="ic">🏢</span>企業検索・マッチング<span class="badge">1</span></a>
     <a class="navlink" data-s="churn" onclick="go('churn')"><span class="ic">🚪</span>離脱者一覧</a>
+    <h6>定着支援</h6>
+    <a class="navlink" data-s="after" onclick="go('after')" title="入社後6回のフォロー面談・定着支援"><span class="ic">🌱</span>アフターフォロー<span class="badge">6</span></a>
     <h6>全体像</h6>
     <a class="navlink" data-s="overview" onclick="go('overview')"><span class="ic">🗺</span>機能マップ / 構成</a>
   </nav>
@@ -684,28 +740,37 @@
   <main class="main">
     <!-- mobile tab bar -->
     <div class="mobile-tabs" id="mobtabs"></div>
-    <div class="mobnote">📱 スマホ表示：移動中・スキマ時間でのLINE確認や面談メモの参照を想定</div>
+    <div class="mobnote">📱 スマホ表示：移動中・スキマ時間でのメッセージ確認や面談メモの参照を想定</div>
 
     <!-- ============ DASHBOARD ============ -->
     <section class="screen on" id="s-dash">
       <div class="crumb">ホーム / ダッシュボード</div>
-      <div class="h1">おはようございます、緑川さん <span class="pill">本日 3件の面談</span></div>
+      <div class="h1">おはようございます、緑川さん <span class="pill">本日 5件の面談</span></div>
       <div class="lead">本日の予定・対応待ちの候補者・AIからのリマインドをまとめて確認できます。</div>
       <div class="kpis">
-        <div class="kpi"><div class="lab">📥 新規候補者（振り分け待ち）</div><div class="num">6</div><div class="delta up">+2 本日</div></div>
-        <div class="kpi"><div class="lab">📅 本日の面談</div><div class="num">3</div><div class="delta">10:00 / 13:30 / 16:00</div></div>
+        <div class="kpi" onclick="document.getElementById('todayNewCard').scrollIntoView({behavior:'smooth',block:'center'})" style="cursor:pointer"><div class="lab">📥 本日の新規候補者</div><div class="num">4</div><div class="delta dn">挨拶メッセージ 未送信 ・ 送信へ →</div></div>
+        <div class="kpi"><div class="lab">📅 本日の面談</div><div class="num">5</div><div class="delta">10:00 / 11:30 / 13:30 / 15:00 / 16:30</div></div>
         <div class="kpi" onclick="openProfile('sato')" style="cursor:pointer"><div class="lab">📄 書類作成中</div><div class="num">4</div><div class="delta dn">2件 期限間近 ・ 詳細へ →</div></div>
         <div class="kpi" onclick="document.getElementById('scoreSummary').scrollIntoView({behavior:'smooth',block:'center'})" style="cursor:pointer"><div class="lab">⭐ 今週の平均面談スコア</div><div class="num">82</div><div class="delta up">+5 先週比 ・ サマリーへ →</div></div>
       </div>
 
+      <div class="card" id="todayNewCard" style="margin-bottom:18px;border-left:4px solid var(--teal)">
+        <div class="hd"><h3>📥 本日の新規候補者 — まずは挨拶メッセージ</h3><span class="sub">初回接触の自動化</span>
+          <span class="right"><button class="btn primary sm" id="greetAllBtn" onclick="greetSendAll()">✉ 全員に一括送信</button></span></div>
+        <div class="bd" id="todayNewBody" style="padding-top:6px"></div>
+      </div>
+
       <div class="card" style="margin-bottom:18px;border-left:4px solid var(--danger)">
-        <div class="hd"><h3>🔔 アラート（要対応）</h3><span class="right"><span class="alert-chip">5件</span></span></div>
+        <div class="hd"><h3>🔔 アラート（要対応）</h3><span class="right"><span class="alert-chip">8件</span></span></div>
         <div class="bd alertlist" style="padding-top:4px">
           <div class="ar" onclick="go('schedule')"><span class="adot hi"></span><div class="atx"><div class="at">二次面談の日程が未確定</div><div class="ad">田中 健太さん ・ 6/30 予定だが確定待ち</div></div><span class="ago">日程調整 →</span></div>
           <div class="ar" onclick="openProfile('takahashi')"><span class="adot hi"></span><div class="atx"><div class="at">一次面談の結果待ち（3営業日経過）</div><div class="ad">高橋 直人さん ・ 株式会社▲▲へ催促を推奨</div></div><span class="ago">候補者詳細 →</span></div>
           <div class="ar" onclick="openProfile('watanabe')"><span class="adot hi"></span><div class="atx"><div class="at">一次面談 落選 → 再マッチング推奨</div><div class="ad">渡辺 亮太さん ・ ●●ソリューションズ</div></div><span class="ago">再マッチング →</span></div>
           <div class="ar" onclick="go('list')"><span class="adot mid"></span><div class="atx"><div class="at">書類が未送付（2件）</div><div class="ad">佐藤 美咲さん・伊藤 さくらさん</div></div><span class="ago">候補者一覧 →</span></div>
           <div class="ar" onclick="go('line')"><span class="adot lo"></span><div class="atx"><div class="at">未読メッセージ 2件</div><div class="ad">鈴木 涼さん（希望年収の返信）ほか</div></div><span class="ago">メッセージ →</span></div>
+          <div class="ar" onclick="go('list')"><span class="adot hi"></span><div class="atx"><div class="at">長期フォロー漏れ：12名が7日以上 未接触</div><div class="ad">担当80名の増加に伴い放置リスク ・ 優先連絡を推奨</div></div><span class="ago">候補者一覧 →</span></div>
+          <div class="ar" onclick="go('list')"><span class="adot mid"></span><div class="atx"><div class="at">面談後の書類化 未着手：6名</div><div class="ad">面談実施済みだが職務経歴書が未作成</div></div><span class="ago">候補者一覧 →</span></div>
+          <div class="ar" onclick="go('match')"><span class="adot mid"></span><div class="atx"><div class="at">選考結果の催促漏れ：4社が目安日超過</div><div class="ad">書類・一次の結果待ちが長期化</div></div><span class="ago">企業マッチング →</span></div>
         </div>
       </div>
 
@@ -738,10 +803,12 @@
           <div class="hd"><h3>本日の面談スケジュール</h3><span class="right"><button class="btn ghost sm" onclick="go('schedule')">調整画面へ</button></span></div>
           <div class="bd" style="padding-top:6px">
             <table>
-              <tr><th>時間</th><th>候補者</th><th>状態</th><th>準備</th></tr>
-              <tr class="row" onclick="go('room')"><td>10:00</td><td><span class="miniavatar">田</span>田中 健太</td><td><span class="chip sched">まもなく</span></td><td><span class="chip done">事前情報✓</span></td></tr>
-              <tr class="row" onclick="go('profile')"><td>13:30</td><td><span class="miniavatar">佐</span>佐藤 美咲</td><td><span class="chip gray">予定</span></td><td><span class="chip new">未確認</span></td></tr>
-              <tr class="row"><td>16:00</td><td><span class="miniavatar">鈴</span>鈴木 涼</td><td><span class="chip gray">予定</span></td><td><span class="chip done">事前情報✓</span></td></tr>
+              <tr><th>時間</th><th>候補者</th><th>管理ID</th><th>状態</th><th>準備</th></tr>
+              <tr class="row" onclick="go('room')"><td>10:00</td><td><span class="miniavatar">田</span>田中 健太</td><td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:700;letter-spacing:.3px;color:#13313F">HX-2026-0001</span></td><td><span class="chip sched">まもなく</span></td><td><span class="chip done">事前情報✓</span></td></tr>
+              <tr class="row" onclick="go('profile')"><td>11:30</td><td><span class="miniavatar">高</span>高橋 直人</td><td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:700;letter-spacing:.3px;color:#13313F">HX-2026-0004</span></td><td><span class="chip gray">予定</span></td><td><span class="chip done">事前情報✓</span></td></tr>
+              <tr class="row" onclick="go('profile')"><td>13:30</td><td><span class="miniavatar">佐</span>佐藤 美咲</td><td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:700;letter-spacing:.3px;color:#13313F">HX-2026-0002</span></td><td><span class="chip gray">予定</span></td><td><span class="chip new">未確認</span></td></tr>
+              <tr class="row"><td>15:00</td><td><span class="miniavatar">鈴</span>鈴木 涼</td><td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:700;letter-spacing:.3px;color:#13313F">HX-2026-0003</span></td><td><span class="chip gray">予定</span></td><td><span class="chip done">事前情報✓</span></td></tr>
+              <tr class="row" onclick="go('profile')"><td>16:30</td><td><span class="miniavatar">中</span>中島 涼介</td><td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:700;letter-spacing:.3px;color:#13313F">HX-2026-0009</span></td><td><span class="chip gray">予定</span></td><td><span class="chip new">未確認</span></td></tr>
             </table>
           </div>
         </div>
@@ -750,7 +817,7 @@
           <div class="bd" style="font-size:13px;color:var(--ink)">
             <p style="margin-bottom:10px">🔔 <b>田中健太さん</b>の備考欄に「転居予定」のメモ。面談で勤務地希望の深掘りを推奨。</p>
             <p style="margin-bottom:10px">📄 <b>佐藤美咲さん</b>の職務経歴書が未完成です（残り2セクション）。</p>
-            <p style="margin-bottom:10px">💬 LINE未読：<b>鈴木涼さん</b>から希望年収について返信あり。</p>
+            <p style="margin-bottom:10px">💬 メッセージ未読：<b>鈴木涼さん</b>から希望年収について返信あり。</p>
             <p>📈 今週の3軸スコア平均が向上。「将来軸」のヒアリング精度が改善しています。</p>
           </div>
         </div>
@@ -795,7 +862,7 @@
       </div>
     </section>
 
-    <!-- ============ PIPELINE ============ -->
+    <!-- ============ PIPEメッセージ ============ -->
     <section class="screen" id="s-pipeline">
       <div class="crumb">業務 / 候補者振り分け</div>
       <div class="h1">候補者振り分け</div>
@@ -809,9 +876,9 @@
             <tr class="row" onclick="go('profile')"><td><span class="miniavatar">田</span>田中 健太</td><td>営業（IT）</td><td>5年</td><td><span class="score" style="color:var(--ok)">92</span></td><td><span class="chip new">高</span></td><td><span class="chip line">緑川</span></td></tr>
             <tr class="row"><td><span class="miniavatar">佐</span>佐藤 美咲</td><td>マーケ</td><td>3年</td><td><span class="score" style="color:var(--ok)">88</span></td><td><span class="chip new">高</span></td><td><span class="chip gray">未割当</span></td></tr>
             <tr class="row"><td><span class="miniavatar">鈴</span>鈴木 涼</td><td>エンジニア</td><td>2年</td><td><span class="score" style="color:var(--accent)">76</span></td><td><span class="chip sched">中</span></td><td><span class="chip line">緑川</span></td></tr>
-            <tr class="row"><td><span class="miniavatar">高</span>高橋 直人</td><td>人事</td><td>8年</td><td><span class="score" style="color:var(--ok)">90</span></td><td><span class="chip new">高</span></td><td><span class="chip gray">未割当</span></td></tr>
-            <tr class="row"><td><span class="miniavatar">伊</span>伊藤 さくら</td><td>事務</td><td>4年</td><td><span class="score" style="color:var(--accent)">71</span></td><td><span class="chip sched">中</span></td><td><span class="chip gray">未割当</span></td></tr>
-            <tr class="row"><td><span class="miniavatar">渡</span>渡辺 亮太</td><td>営業</td><td>1年</td><td><span class="score" style="color:var(--sub)">63</span></td><td><span class="chip gray">低</span></td><td><span class="chip gray">未割当</span></td></tr>
+            <tr class="row"><td><span class="miniavatar">高</span>高橋 直人</td><td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;font-weight:700;letter-spacing:.3px;color:#13313F">HX-2026-0004</span></td><td>人事</td><td>8年</td><td><span class="score" style="color:var(--ok)">90</span></td><td><span class="chip new">高</span></td><td><span class="chip gray">未割当</span></td></tr>
+            <tr class="row"><td><span class="miniavatar">伊</span>伊藤 さくら</td><td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;font-weight:700;letter-spacing:.3px;color:#13313F">HX-2026-0005</span></td><td>事務</td><td>4年</td><td><span class="score" style="color:var(--accent)">71</span></td><td><span class="chip sched">中</span></td><td><span class="chip gray">未割当</span></td></tr>
+            <tr class="row"><td><span class="miniavatar">渡</span>渡辺 亮太</td><td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;font-weight:700;letter-spacing:.3px;color:#13313F">HX-2026-0006</span></td><td>営業</td><td>1年</td><td><span class="score" style="color:var(--sub)">63</span></td><td><span class="chip gray">低</span></td><td><span class="chip gray">未割当</span></td></tr>
           </table>
         </div>
       </div>
@@ -868,7 +935,18 @@
     <section class="screen" id="s-schedule">
       <div class="crumb">業務 / スケジュール調整</div>
       <div class="h1">スケジュール調整</div>
-      <div class="lead">候補者の希望枠とCAの空き枠を突き合わせ、LINE/メールでワンタップ調整。確定で自動的に面談ルームを生成します。カレンダーは月・週・日で切り替えできます。</div>
+      <div class="lead">候補者の希望枠とCAの空き枠を突き合わせ、メッセージ/メールでワンタップ調整。確定で自動的に面談ルームを生成します。カレンダーは月・週・日で切り替えできます。</div>
+
+      <div class="card" id="freeNudgeCard" style="margin:10px 0 14px;border-left:4px solid var(--teal);display:none">
+        <div class="bd" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <span style="font-size:22px">🟢</span>
+          <div><b id="freeNudgeMsg">空き枠があります</b><div style="font-size:12px;color:var(--sub)" id="freeNudgeSub">AIが優先度の高い予定（新規面談・アフターフォロー）を提案します。空き枠をクリックしても追加できます。</div></div>
+          <span style="margin-left:auto;display:flex;gap:8px">
+            <button class="btn ghost sm" onclick="calView('week')">週表示で確認</button>
+            <button class="btn primary sm" onclick="fillAllFree()">✨ 空き枠をAI提案で埋める</button>
+          </span>
+        </div>
+      </div>
 
       <div class="teams">
         <div class="cal-toolbar">
@@ -882,6 +960,15 @@
             <button id="cvMonth" onclick="calView('month')">月</button>
           </div>
           <button class="cal-new">＋ 新しい会議</button>
+        </div>
+        <div class="cal-legend" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:8px 6px;font-size:12px;color:var(--sub)">
+          <b style="color:var(--ink)">凡例：</b>
+          <span><i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#E1F1FA;border-left:3px solid #0095D4;vertical-align:middle;margin-right:5px"></i>初回面談</span>
+          <span><i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#DCF3EF;border-left:3px solid #0E9E86;vertical-align:middle;margin-right:5px"></i>2回目面談</span>
+          <span><i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#FDEBD8;border-left:3px solid #E8823A;vertical-align:middle;margin-right:5px"></i>3回目面談</span>
+          <span><i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#EFE8FA;border-left:3px solid #7C5CBF;vertical-align:middle;margin-right:5px"></i>アフターフォロー</span>
+          <span><i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#EEF1F5;border-left:3px solid #8894a3;vertical-align:middle;margin-right:5px"></i>会議</span>
+          <span><i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#eef1f8;border:1px dashed #9aa3c7;vertical-align:middle;margin-right:5px"></i>空き枠</span>
         </div>
         <div class="calbox">
           <div id="calWeek"></div>
@@ -900,86 +987,73 @@
             <span class="miniavatar">伊</span><div><b>伊藤 さくら</b><br><span style="color:var(--sub);font-size:12px">希望：水・木</span></div>
             <button class="btn primary sm" style="margin-left:auto">候補日送信</button></div>
           <div style="display:flex;align-items:center;gap:10px;padding:10px 0">
-            <span class="miniavatar">渡</span><div><b>渡辺 亮太</b><br><span style="color:var(--sub);font-size:12px">LINE返信待ち</span></div>
+            <span class="miniavatar">渡</span><div><b>渡辺 亮太</b><br><span style="color:var(--sub);font-size:12px">返信待ち</span></div>
             <span class="chip line" style="margin-left:auto">📤 送信済</span></div>
         </div>
       </div>
-      <div class="note">💡 確定すると面談ルーム（録画・文字起こし）が自動生成され、候補者へLINEでURLとリマインドを自動送信します。</div>
+      <div class="note">💡 確定すると面談ルーム（録画・文字起こし）が自動生成され、候補者へメッセージでURLとリマインドを自動送信します。</div>
     </section>
 
     <!-- ============ CANDIDATE LIST ============ -->
     <section class="screen" id="s-list">
       <div class="crumb">業務 / 候補者一覧</div>
-      <div class="h1">候補者一覧</div>
-      <div class="lead">担当候補者の選考進捗を一覧で管理。各候補者の現在の段階（書類選考／一次面談／二次面談／最終面談／内定／落選）をタイトルで表示し、行をクリックすると詳細プロフィールで各段階の合否を確認できます。</div>
+      <div class="h1" id="listTitle">候補者一覧</div>
+      <div class="lead" id="listLead">担当候補者の選考進捗を一覧で管理。各候補者の現在の段階（書類選考／一次面談／二次面談／最終面談／内定／落選）をタイトルで表示し、行をクリックすると詳細プロフィールで各段階の合否を確認できます。</div>
 
-      <div class="card" style="margin-bottom:16px;border-left:4px solid var(--danger)">
+      <div class="card" id="listAlertCard" style="margin-bottom:16px;border-left:4px solid var(--danger)">
         <div class="bd" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
           <b style="font-size:14px">🔔 アラート</b>
           <span style="display:flex;align-items:center;gap:7px"><span class="tdot hi"></span>迅速な対応 <b style="font-size:20px;color:var(--danger)">3</b> 件</span>
           <span style="display:flex;align-items:center;gap:7px"><span class="tdot mid"></span>急ぎ <b style="font-size:20px;color:#8a5a00">2</b> 件</span>
           <span style="display:flex;align-items:center;gap:7px;color:var(--sub)"><span class="tdot lo"></span>通常 2 件</span>
-          <span style="margin-left:auto;font-size:12px;color:var(--sub)">下の表「アラート」列で対象候補者を確認</span>
+          <span style="display:flex;align-items:center;gap:7px;color:#8a5a00"><span class="tdot mid"></span>業務漏れ注意 <b style="font-size:20px;color:#8a5a00">18</b> 件<span style="font-size:11px;color:var(--sub)">（未接触12・書類化6）</span></span><span style="margin-left:auto;font-size:12px;color:var(--sub)">下の表「アラート」列で対象候補者を確認</span>
         </div>
       </div>
 
       <div class="kpis">
-        <div class="kpi"><div class="lab">📋 担当候補者</div><div class="num">7</div><div class="delta">アクティブ</div></div>
-        <div class="kpi"><div class="lab">🎉 内定</div><div class="num" style="color:var(--ok)">1</div><div class="delta up">山本さん</div></div>
-        <div class="kpi"><div class="lab">🗣 面談 選考中</div><div class="num" style="color:#1d6cc0">2</div><div class="delta">一次・二次</div></div>
-        <div class="kpi"><div class="lab">📤 書類 未送付</div><div class="num" style="color:#6E4257">2</div><div class="delta dn">要対応</div></div>
+        <div class="kpi"><div class="lab" id="kpiActiveLab">📋 担当候補者</div><div class="num" id="kpiActiveNum">80</div><div class="delta">アクティブ</div></div>
+        <div class="kpi"><div class="lab">🎉 内定</div><div class="num" style="color:var(--ok)">6</div><div class="delta up">今月</div></div>
+        <div class="kpi"><div class="lab">🗣 面談 選考中</div><div class="num" style="color:#1d6cc0">28</div><div class="delta">一次〜最終</div></div>
+        <div class="kpi"><div class="lab">📤 書類 未送付</div><div class="num" style="color:#6E4257">9</div><div class="delta dn">要対応</div></div>
       </div>
 
       <div class="card" style="margin-top:16px">
-        <div class="hd"><h3>候補者と選考進捗</h3>
+        <div class="hd"><h3 id="listCardTitle">候補者と選考進捗</h3><span class="sub" id="listCardSub">担当 全80名</span>
           <span class="right">
-            <select style="border:1px solid var(--line);border-radius:18px;padding:6px 11px;font-size:12px;font-family:inherit">
-              <option>段階：すべて</option><option>書類選考</option><option>一次面談</option><option>二次面談</option><option>最終面談</option><option>内定</option><option>落選</option>
+            <select id="listSort" onchange="renderList(this.value)" style="border:1px solid var(--line);border-radius:18px;padding:6px 11px;font-size:12px;font-family:inherit">
+              <option value="default">並び替え：既定（担当順）</option>
+              <option value="deep">進捗が深い順（内定→書類）</option>
+              <option value="shallow">進捗が浅い順（書類→内定）</option>
+              <option value="alert">アラート優先</option>
+              <option value="recent">更新が新しい順</option>
             </select>
           </span>
         </div>
         <div class="bd" style="padding-top:6px">
-          <table>
-            <tr><th style="text-align:center">アラート</th><th>候補者</th><th>希望職種</th><th>選考進捗</th><th>紹介企業</th><th>更新</th></tr>
-            <tr class="row" onclick="openProfile('tanaka')">
-              <td style="text-align:center"><span class="tdot mid" title="急ぎ：二次面談の日程確定待ち"></span></td><td><span class="miniavatar">田</span>田中 健太</td><td>営業（IT）</td><td><span class="chip stage">二次面談</span></td>
-              <td>株式会社△△ 他1社</td><td>本日</td></tr>
-            <tr class="row" onclick="openProfile('sato')">
-              <td style="text-align:center"><span class="tdot hi" title="迅速対応：職務経歴書が未完成"></span></td><td><span class="miniavatar">佐</span>佐藤 美咲</td><td>マーケ</td><td><span class="chip stage">書類作成中</span></td>
-              <td>—</td><td>本日</td></tr>
-            <tr class="row" onclick="openProfile('suzuki')">
-              <td style="text-align:center"><span class="tdot lo" title="通常：書類選考の結果待ち"></span></td><td><span class="miniavatar">鈴</span>鈴木 涼</td><td>エンジニア</td><td><span class="chip stage">書類選考</span></td>
-              <td>◇◇テック</td><td>昨日</td></tr>
-            <tr class="row" onclick="openProfile('takahashi')">
-              <td style="text-align:center"><span class="tdot hi" title="迅速対応：一次結果待ち（3営業日経過）"></span></td><td><span class="miniavatar">高</span>高橋 直人</td><td>人事</td><td><span class="chip stage">一次面談</span></td>
-              <td>株式会社▲▲</td><td>6/24</td></tr>
-            <tr class="row" onclick="openProfile('ito')">
-              <td style="text-align:center"><span class="tdot mid" title="急ぎ：面談前・書類未送付"></span></td><td><span class="miniavatar">伊</span>伊藤 さくら</td><td>事務</td><td><span class="chip stage">面談前</span></td>
-              <td>—</td><td>6/24</td></tr>
-            <tr class="row" onclick="openProfile('watanabe')">
-              <td style="text-align:center"><span class="tdot hi" title="迅速対応：一次落選→再マッチング"></span></td><td><span class="miniavatar">渡</span>渡辺 亮太</td><td>営業</td><td><span class="chip fail">落選</span></td>
-              <td>●●ソリューションズ 他1社</td><td>6/23</td></tr>
-            <tr class="row" onclick="openProfile('yamamoto')">
-              <td style="text-align:center"><span class="tdot lo" title="通常：内定（手続き進行中）"></span></td><td><span class="miniavatar">山</span>山本 千尋</td><td>カスタマーサクセス</td><td><span class="chip done">内定</span></td>
-              <td>クラウド□□</td><td>6/20</td></tr>
+          <div class="lfilter" id="listFilter"></div>
+          <div class="qsort" id="listQuick"></div>
+          <table id="listTable">
+            <tr><th style="text-align:center">アラート</th><th>候補者</th><th>管理ID</th><th>希望職種</th><th>選考進捗</th><th>紹介企業</th><th>更新</th></tr>
+            <tbody id="listBody"></tbody>
           </table>
-          <div style="font-size:11px;color:var(--sub);margin-top:8px;display:flex;gap:14px;align-items:center"><b>アラート凡例：</b><span><span class="tdot hi" style="width:11px;height:11px;vertical-align:middle;margin-right:4px"></span>迅速な対応</span><span><span class="tdot mid" style="width:11px;height:11px;vertical-align:middle;margin-right:4px"></span>急ぎ</span><span><span class="tdot lo" style="width:11px;height:11px;vertical-align:middle;margin-right:4px"></span>通常</span></div>
+          <div id="listLegend" style="font-size:11px;color:var(--sub);margin-top:8px;display:flex;gap:14px;align-items:center"><b>アラート凡例：</b><span><span class="tdot hi" style="width:11px;height:11px;vertical-align:middle;margin-right:4px"></span>迅速な対応</span><span><span class="tdot mid" style="width:11px;height:11px;vertical-align:middle;margin-right:4px"></span>急ぎ</span><span><span class="tdot lo" style="width:11px;height:11px;vertical-align:middle;margin-right:4px"></span>通常</span></div>
         </div>
       </div>
-      <div class="note">💡 田中さん（二次面談）・高橋さん（一次面談）は結果待ち。渡辺さんは一次面談で落選のため再マッチングを推奨。佐藤さん・伊藤さんは書類が未送付です。</div>
+      <div class="note" id="listNote">💡 田中さん（二次面談）・高橋さん（一次面談）は結果待ち。渡辺さんは一次面談で落選のため再マッチングを推奨。佐藤さん・伊藤さんは書類が未送付です。</div>
     </section>
 
     <!-- ============ PROFILE ============ -->
     <section class="screen" id="s-profile">
       <div class="crumb"><a onclick="go('list')" style="color:var(--teal);cursor:pointer;font-weight:600">← 候補者一覧</a> / <span id="pfCrumb">田中 健太</span></div>
-      <div class="h1"><span class="miniavatar" id="pfAvatar" style="width:34px;height:34px">田</span><span id="pfName">田中 健太</span> <span class="pill" id="pfTask">🟡 急ぎ：二次面談の日程を確定</span></div>
+      <div class="h1"><span class="miniavatar" id="pfAvatar" style="width:34px;height:34px">田</span><span id="pfName">田中 健太</span> <span id="pfMid" title="管理ID" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:700;color:var(--navy,#13313F);background:#EEF4F7;border:1px solid #cde0e8;border-radius:6px;padding:2px 8px;letter-spacing:.5px">HX-2026-0001</span> <span class="pill" id="pfTask">🟡 急ぎ：二次面談の日程を確定</span></div>
 
       <div class="profcols" id="profcols">
-        <!-- 左：基本情報 + LINE -->
+        <!-- 左：基本情報 + メッセージ -->
         <div class="pcol-left">
           <div class="card">
             <div class="hd"><h3>👤 基本情報</h3></div>
             <div class="bd">
+              <div class="field"><label>管理ID</label><div class="val" id="pfMidInfo" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;letter-spacing:.5px">HX-2026-0001</div></div>
               <div class="field"><label>氏名</label><div class="val" id="lbName">田中 健太</div></div>
               <div class="field"><label>年齢 / 性別</label><div class="val" id="lbAge">29歳 / 男性</div></div>
               <div class="field"><label>エリア / 住所</label><div class="val" id="lbAddr">東京（転居検討中）</div></div>
@@ -987,7 +1061,7 @@
             </div>
           </div>
           <div class="card">
-            <div class="hd"><h3>💬 LINE連携</h3><span class="right"><span class="chip line">連携中</span></span></div>
+            <div class="hd"><h3>💬 メッセージ（Handshax）</h3><span class="right"><span class="chip line">接続中</span></span></div>
             <div class="bd">
               <div class="chat" style="max-height:300px" id="pfLineChat">
                 <div class="msg them"><div class="bub">先日はお電話ありがとうございました！面談楽しみにしています。</div><span class="time">月 9:12</span></div>
@@ -1418,14 +1492,14 @@
       </div>
     </section>
 
-    <!-- ============ LINE ============ -->
+    <!-- ============ メッセージ ============ -->
     <section class="screen" id="s-line">
       <div class="crumb">メッセージ</div>
       <div class="h1">メッセージ <span class="pill">要望②</span></div>
-      <div class="lead">候補者とのLINE、企業との連絡を1か所で管理。宛先（候補者／企業）を選んでやり取りを確認・返信できます。AIが要点とタスクを抽出します。</div>
+      <div class="lead">候補者とのメッセージ、企業との連絡を1か所で管理。宛先（候補者／企業）を選んでやり取りを確認・返信できます。AIが要点とタスクを抽出します。</div>
 
       <div class="seg">
-        <button class="on" id="msgTabCand" onclick="msgTab('cand')">💬 候補者（LINE）</button>
+        <button class="on" id="msgTabCand" onclick="msgTab('cand')">💬 候補者</button>
         <button id="msgTabCorp" onclick="msgTab('corp')">🏢 企業</button>
         <button id="msgTabTeam" onclick="msgTab('team')">👥 チーム（CA）</button>
       </div>
@@ -1435,7 +1509,7 @@
         <div class="rcpt"><span class="lab">👤 宛先：</span><input id="candSearch" class="msgsearch" placeholder="🔍 候補者を検索" oninput="filterSel('cand')"><select id="candSelect" class="msgselect" onchange="selectCandMsg(this.value)"></select></div>
         <div class="two">
           <div class="card">
-            <div class="hd"><h3 id="msgCandTitle">💬 田中 健太 とのトーク</h3><span class="right"><span class="chip line">LINE連携中</span></span></div>
+            <div class="hd"><h3 id="msgCandTitle">💬 田中 健太 とのトーク</h3><span class="right"><span class="chip line">接続中</span></span></div>
             <div class="bd">
               <div class="chat" id="msgCandChat"></div>
               <div style="display:flex;gap:8px;margin-top:12px">
@@ -1692,7 +1766,7 @@
             <div class="ev done"><div class="d">6/20</div><div class="t">候補者を選定・企業へ打診</div><div class="x">マッチ度94・成長軸タイプとして推薦</div></div>
             <div class="ev done"><div class="d">6/21</div><div class="t">職務経歴書・履歴書を送付 <span class="chip sched">書類送付</span></div><div class="x">CA作成の書類を企業担当へ共有</div></div>
             <div class="ev done"><div class="d">6/22</div><div class="t">書類選考 通過 <span class="chip done">通過</span></div><div class="bub">企業担当より：「マネジメント実績と数値志向が魅力。ぜひ面談したい」</div></div>
-            <div class="ev done"><div class="d">6/24</div><div class="t">一次面談の日程をLINEで調整</div><div class="x">候補日3件を提示 → 6/25 14:00 で確定</div></div>
+            <div class="ev done"><div class="d">6/24</div><div class="t">一次面談の日程をメッセージで調整</div><div class="x">候補日3件を提示 → 6/25 14:00 で確定</div></div>
             <div class="ev done"><div class="d">6/25</div><div class="t">一次面談 実施（オンライン）<span class="chip done">通過</span></div><div class="x">面談ルームで録画・文字起こし・採点を実施</div></div>
             <div class="ev"><div class="d">6/30</div><div class="t">二次面談 予定 <span class="chip sched">調整中</span></div><div class="bub">候補日を調整中。Scoutが前日リマインドを予約済み。</div></div>
             <div class="ev pend"><div class="d">—</div><div class="t">最終面談・内定</div><div class="x">二次の結果を受けて進行</div></div>
@@ -1705,7 +1779,7 @@
     <section class="screen" id="s-docs">
       <div class="crumb"><a onclick="go('profile')" style="color:var(--teal);cursor:pointer;font-weight:600">← 候補者詳細</a> / 履歴書・職務経歴書</div>
       <div class="h1">履歴書・職務経歴書 <span class="pill">要望③</span></div>
-      <div class="lead">面談の文字起こし・AIメモ・LINE情報をもとに、ヒアリングしながらリアルタイムで書類を生成。下書きを確認・編集して確定します。</div>
+      <div class="lead">面談の文字起こし・AIメモ・メッセージ情報をもとに、ヒアリングしながらリアルタイムで書類を生成。下書きを確認・編集して確定します。</div>
       <div class="two">
         <div class="card">
           <div class="hd"><h3>📄 職務経歴書（自動生成）</h3><span class="right"><button class="btn ghost sm">PDF出力</button> <button class="btn primary sm">外部サービス連携</button></span></div>
@@ -1729,7 +1803,7 @@
             </div>
             <div class="field"><label>志望動機（AI下書き）</label>
               <div class="ai-write" style="margin-top:0">SaaS業界で、顧客の成功とプロダクトの成長に長期的に貢献したいと考え志望しました。前職で培った提案営業とマネジメント経験を活かせると確信しています。</div></div>
-            <div class="note">💡 LINEで取得した「希望年収550万〜」も条件欄に自動反映。確定後、履歴書作成サービスへワンクリック連携します。</div>
+            <div class="note">💡 メッセージで取得した「希望年収550万〜」も条件欄に自動反映。確定後、履歴書作成サービスへワンクリック連携します。</div>
           </div>
         </div>
       </div>
@@ -1827,6 +1901,63 @@
     </section>
 
     <!-- ============ OVERVIEW / FEATURE MAP ============ -->
+    <!-- ============ AFTER CARE (アフターフォロー) ============ -->
+    <section class="screen" id="s-after">
+      <div class="crumb">定着支援 / アフターフォロー</div>
+      <div class="h1">🌱 アフターフォロー <span class="pill">入社後の定着支援</span></div>
+      <p class="sub" style="margin:-4px 0 14px;color:var(--muted)">内定・入社した方に <b>1・3・6・12・18・24ヶ月</b> の計6回のフォロー面談を実施。働き方・自己成長・スキルアップ・昇給を確認し、スコアを改訂して定着率の向上につなげます。</p>
+      <div class="kpis" id="afterKpis"></div>
+      <div class="card"><div class="hd"><h3>🤝 入社者のフォロー状況</h3><span class="sub">6回のマイルストーン</span></div><div class="bd" id="afterBody" style="padding-top:6px"></div></div>
+    </section>
+
+    <!-- ============ AFTER CARE DETAIL ============ -->
+    <section class="screen" id="s-afterdetail">
+      <div class="crumb"><a onclick="go('after')" style="color:var(--teal);cursor:pointer;font-weight:600">← アフターフォロー</a> / <span id="acName">—</span></div>
+      <div class="h1" id="acTitle">—</div>
+      <div id="acBanner"></div>
+      <div class="kpis" id="acKpis"></div>
+      <div class="card"><div class="hd"><h3>🔷 六角形スコアの比較</h3><span class="sub">入社前・成長予測・入社後</span></div><div class="bd" id="acRadar"></div></div>
+      <div class="card"><div class="hd"><h3>🗓 フォロー面談タイムライン（全6回）</h3><span class="sub">1・3・6・12・18・24ヶ月</span></div><div class="bd" id="acTimeline"></div></div>
+      <div class="card"><div class="hd"><h3>📈 スコア推移（改訂）</h3><span class="sub">入社時 → 各フォロー時点</span></div><div class="bd" id="acTrend"></div></div>
+    </section>
+
+    <!-- ============ TEAM CALENDAR (管理者) ============ -->
+    <section class="screen" id="s-teamcal">
+      <div class="crumb">マネジメント / チーム日程</div>
+      <div class="h1">🗓 チーム日程調整 <span class="pill">管理者ビュー</span></div>
+      <p class="sub" style="margin:-4px 0 12px;color:var(--muted)">担当CA5名の予定を1つのカレンダーに重ねて表示。左のリストでCAごとに色分け・表示切替、並び替えができます。候補者との日程調整は各CAが実施します。</p>
+      <div class="teams" style="display:flex;gap:0;align-items:stretch">
+        <aside style="width:210px;flex:none;border-right:1px solid var(--line);padding:12px;background:#fbfdff">
+          <div style="font-size:12px;font-weight:800;color:var(--navy);margin-bottom:8px">🗂 CAの予定表</div>
+          <div id="tcPeople"></div>
+          <div style="margin-top:14px;font-size:11.5px;color:var(--sub);font-weight:600">並び替え</div>
+          <select id="tcSort" onchange="setTeamCalSort(this.value)" style="width:100%;margin-top:4px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12px;font-family:inherit">
+            <option value="name">CA名順</option>
+            <option value="busy">稼働率が高い順</option>
+            <option value="free">空き枠が多い順</option>
+          </select>
+          <button class="btn ghost sm" style="width:100%;margin-top:10px" onclick="tcAll(true)">全員表示</button>
+          <button class="btn ghost sm" style="width:100%;margin-top:6px" onclick="tcAll(false)">全員非表示</button>
+        </aside>
+        <div style="flex:1;min-width:0">
+          <div class="cal-toolbar"><button class="cal-today">今日</button><div class="cal-nav"><button>‹</button><button>›</button></div><div class="cal-range">2026年6月 22〜28日（週）</div><div class="cal-spacer"></div><span style="font-size:12px;color:var(--sub)" id="tcCount"></span></div>
+          <div class="calbox" style="overflow:auto"><div id="teamCalBody"></div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px"><div class="hd"><h3>👥 CA別サマリー（今週）</h3></div><div class="bd" id="teamCalSum"></div></div>
+    </section>
+
+    <!-- ============ TEAM MANAGEMENT (管理者) ============ -->
+    <section class="screen" id="s-team">
+      <div class="crumb">マネジメント / チーム管理</div>
+      <div class="h1">🛡 チーム管理 <span class="pill">管理者ビュー</span></div>
+      <p class="sub" style="margin:-4px 0 14px;color:var(--muted)">5名のCA（各80名担当・計400名）の稼働・実績・面談品質を統括し、新規候補者を最適に配分します。</p>
+      <div id="teamKpi"></div>
+      <div class="card"><div class="hd"><h3>🧮 候補者の振り分け</h3><span class="sub">AI推奨＋負荷分散</span><span class="right"><span class="chip new">振り分け待ち 6名</span></span></div><div class="bd" id="teamAssign"></div></div>
+      <div class="card"><div class="hd"><h3>👥 CA別 担当状況（各80名）</h3><span class="sub">過剰・滞留を検知</span></div><div class="bd" id="teamLoad"></div></div>
+      <div class="card"><div class="hd"><h3>🎧 面談品質モニタリング</h3><span class="sub">低スコアを自動フラグ</span></div><div class="bd" id="teamQuality"></div></div>
+    </section>
+
     <section class="screen" id="s-overview">
       <div class="crumb">全体像 / 機能マップ・構成</div>
       <div class="h1">アプリ全体構成</div>
@@ -1841,7 +1972,7 @@
             <div class="fm"><div class="ic">👤</div><div><div class="t">候補者（一覧・詳細）</div><div class="d">一覧（選考進捗）→ 行クリックで3カラム詳細＋Studio。一覧と詳細を統合</div></div></div>
             <div class="fm"><div class="ic">📅</div><div><div class="t">スケジュール調整</div><div class="d">Teams風カレンダー（月/週/日）・候補日送信・面談ルーム自動生成</div></div></div>
             <div class="fm"><div class="ic">🎥</div><div><div class="t">面談ルーム</div><div class="d">実写カメラ＋セルフビュー・録画(RECランプ連動)・文字起こし(DL/AI連動)・感情AI・3軸・カメラ重畳オーバーレイ・通常/シアター/ポップアウト</div></div></div>
-            <div class="fm"><div class="ic">💬</div><div><div class="t">メッセージ</div><div class="d">候補者LINE＋企業メッセージを宛先プルダウン(各10件・検索)で確認/返信・AI要約</div></div></div>
+            <div class="fm"><div class="ic">💬</div><div><div class="t">メッセージ</div><div class="d">候補者メッセージ＋企業メッセージを宛先プルダウン(各10件・検索)で確認/返信・AI要約</div></div></div>
             <div class="fm"><div class="ic">🏢</div><div><div class="t">企業検索・マッチング</div><div class="d">候補者を選択→AIマッチ/検索結果。マッチ度・CA評価・紹介料・紹介理由・求人詳細(候補者選択＋タイムライン)</div></div></div>
             <div class="fm"><div class="ic">🗺</div><div><div class="t">機能マップ / 構成</div><div class="d">本ページ（全体構成）</div></div></div>
           </div>
@@ -1852,7 +1983,7 @@
         <div class="hd"><h3>👤 候補者詳細ページの構成（3カラム＋Studio）</h3><span class="sub">NotebookLM風</span></div>
         <div class="bd">
           <div class="three">
-            <div style="border:1px solid var(--line);border-radius:10px;padding:12px"><b>◀ 左：基本情報</b><p style="font-size:12.5px;color:var(--sub);margin-top:6px">氏名・年齢・エリア/住所・希望年収 ／ LINE連携（メッセージ送信可）</p></div>
+            <div style="border:1px solid var(--line);border-radius:10px;padding:12px"><b>◀ 左：基本情報</b><p style="font-size:12.5px;color:var(--sub);margin-top:6px">氏名・年齢・エリア/住所・希望年収 ／ メッセージ連携（メッセージ送信可）</p></div>
             <div style="border:1px solid var(--line);border-radius:10px;padding:12px"><b>● 中央：選考フロー</b><p style="font-size:12.5px;color:var(--sub);margin-top:6px">選考進捗（5段階ステッパー）／自己紹介動画／事前ヒアリング情報／面談前 深掘りポイント／1回目・2回目 面談サマリー</p></div>
             <div style="border:1px solid var(--line);border-radius:10px;padding:12px;background:#F2FBF9;border-color:#bfe6df"><b>▶ 右：🧩 Studio</b><p style="font-size:12.5px;color:var(--sub);margin-top:6px">タイルでページ内起動（幅可変・別画面に飛ばない）：書類作成／企業マッチング／マインドマップ作成／スコアリング作成／キャッチコピー作成／紹介文作成</p></div>
           </div>
@@ -1862,14 +1993,14 @@
       <div class="card" style="margin-top:16px">
         <div class="hd"><h3>📋 業務フローとアプリ機能の対応</h3><span class="sub">全22ステップ ・ 横スクロール</span></div>
         <div class="bd">
-          <div class="stepflow"><div class="step"><div class="no">1</div><div class="nm">候補者振り分け</div><div class="ai">AI適合度</div></div><div class="arrow">→</div><div class="step"><div class="no">2</div><div class="nm">事前情報確認</div><div class="ai">スプシ連携</div></div><div class="arrow">→</div><div class="step"><div class="no">3</div><div class="nm">面談(1回目)の日程調整</div><div class="ai">Teams風</div></div><div class="arrow">→</div><div class="step"><div class="no">4</div><div class="nm">面談(1回目)</div><div class="ai">録画・文字起こし</div></div><div class="arrow">→</div><div class="step"><div class="no">5</div><div class="nm">ヒアリング(転職理由/3軸)</div><div class="ai">感情AI・3軸</div></div><div class="arrow">→</div><div class="step"><div class="no">6</div><div class="nm">書類作成</div><div class="ai">AI生成</div></div><div class="arrow">→</div><div class="step"><div class="no">7</div><div class="nm">LINE交換</div><div class="ai">メッセージ</div></div><div class="arrow">→</div><div class="step"><div class="no">8</div><div class="nm">次回面談スケジュール</div><div class="ai">Teams風</div></div><div class="arrow">→</div><div class="step"><div class="no">9</div><div class="nm">面談採点・スコアリング</div><div class="ai">六角形・AI/CA</div></div><div class="arrow">→</div><div class="step" style="border-color:#bfe6df;background:#F2FBF9"><div class="no">10</div><div class="nm">企業マッチング</div><div class="ai">自動選出</div></div><div class="arrow">→</div><div class="step"><div class="no">11</div><div class="nm">面談(2回目)</div><div class="ai">録画・採点</div></div><div class="arrow">→</div><div class="step"><div class="no">12</div><div class="nm">企業紹介(マッチ度説明)</div><div class="ai">マインドマップ</div></div><div class="arrow">→</div><div class="step"><div class="no">13</div><div class="nm">応募企業選定</div></div><div class="arrow">→</div><div class="step"><div class="no">14</div><div class="nm">次回面談スケジュール</div><div class="ai">Teams風</div></div><div class="arrow">→</div><div class="step" style="border-color:#bfe6df;background:#F2FBF9"><div class="no">15</div><div class="nm">紹介文作成</div><div class="ai">約2,000字</div></div><div class="arrow">→</div><div class="step"><div class="no">16</div><div class="nm">企業へ書類送付</div><div class="ai">選考管理</div></div><div class="arrow">→</div><div class="step"><div class="no">17</div><div class="nm">面談(3回目)</div></div><div class="arrow">→</div><div class="step"><div class="no">18</div><div class="nm">企業面接指南</div><div class="ai">Scout</div></div><div class="arrow">→</div><div class="step"><div class="no">19</div><div class="nm">次回面談スケジュール</div><div class="ai">Teams風</div></div><div class="arrow">→</div><div class="step"><div class="no">20</div><div class="nm">面談(4回目)</div></div><div class="arrow">→</div><div class="step"><div class="no">21</div><div class="nm">条件確認</div></div><div class="arrow">→</div><div class="step" style="border-color:#bfe6df;background:#F2FBF9"><div class="no">22</div><div class="nm">紹介完了</div><div class="ai">内定</div></div></div>
+          <div class="stepflow"><div class="step"><div class="no">1</div><div class="nm">候補者振り分け</div><div class="ai">AI適合度</div></div><div class="arrow">→</div><div class="step"><div class="no">2</div><div class="nm">事前情報確認</div><div class="ai">スプシ連携</div></div><div class="arrow">→</div><div class="step"><div class="no">3</div><div class="nm">面談(1回目)の日程調整</div><div class="ai">Teams風</div></div><div class="arrow">→</div><div class="step"><div class="no">4</div><div class="nm">面談(1回目)</div><div class="ai">録画・文字起こし</div></div><div class="arrow">→</div><div class="step"><div class="no">5</div><div class="nm">ヒアリング(転職理由/3軸)</div><div class="ai">感情AI・3軸</div></div><div class="arrow">→</div><div class="step"><div class="no">6</div><div class="nm">書類作成</div><div class="ai">AI生成</div></div><div class="arrow">→</div><div class="step"><div class="no">7</div><div class="nm">連絡先交換</div><div class="ai">メッセージ</div></div><div class="arrow">→</div><div class="step"><div class="no">8</div><div class="nm">次回面談スケジュール</div><div class="ai">Teams風</div></div><div class="arrow">→</div><div class="step"><div class="no">9</div><div class="nm">面談採点・スコアリング</div><div class="ai">六角形・AI/CA</div></div><div class="arrow">→</div><div class="step" style="border-color:#bfe6df;background:#F2FBF9"><div class="no">10</div><div class="nm">企業マッチング</div><div class="ai">自動選出</div></div><div class="arrow">→</div><div class="step"><div class="no">11</div><div class="nm">面談(2回目)</div><div class="ai">録画・採点</div></div><div class="arrow">→</div><div class="step"><div class="no">12</div><div class="nm">企業紹介(マッチ度説明)</div><div class="ai">マインドマップ</div></div><div class="arrow">→</div><div class="step"><div class="no">13</div><div class="nm">応募企業選定</div></div><div class="arrow">→</div><div class="step"><div class="no">14</div><div class="nm">次回面談スケジュール</div><div class="ai">Teams風</div></div><div class="arrow">→</div><div class="step" style="border-color:#bfe6df;background:#F2FBF9"><div class="no">15</div><div class="nm">紹介文作成</div><div class="ai">約2,000字</div></div><div class="arrow">→</div><div class="step"><div class="no">16</div><div class="nm">企業へ書類送付</div><div class="ai">選考管理</div></div><div class="arrow">→</div><div class="step"><div class="no">17</div><div class="nm">面談(3回目)</div></div><div class="arrow">→</div><div class="step"><div class="no">18</div><div class="nm">企業面接指南</div><div class="ai">Scout</div></div><div class="arrow">→</div><div class="step"><div class="no">19</div><div class="nm">次回面談スケジュール</div><div class="ai">Teams風</div></div><div class="arrow">→</div><div class="step"><div class="no">20</div><div class="nm">面談(4回目)</div></div><div class="arrow">→</div><div class="step"><div class="no">21</div><div class="nm">条件確認</div></div><div class="arrow">→</div><div class="step" style="border-color:#bfe6df;background:#F2FBF9"><div class="no">22</div><div class="nm">紹介完了</div><div class="ai">内定</div></div></div>
         </div>
       </div>
 
       <h3 style="margin:22px 0 12px;font-size:15px">7つの要望と対応機能</h3>
       <div class="feature-map">
         <div class="fm"><div class="ic">🎥</div><div><div class="t">① 面談の録画・文字起こし</div><div class="d">面談ルームで実写カメラ録画＋話者判定付きリアルタイム文字起こし（DL・AI連動）</div></div></div>
-        <div class="fm"><div class="ic">💬</div><div><div class="t">② メッセージ（LINE・企業連絡）</div><div class="d">候補者LINEと企業メッセージを宛先選択で確認・返信、AIが要点抽出</div></div></div>
+        <div class="fm"><div class="ic">💬</div><div><div class="t">② メッセージ（自社ツール・企業連絡）</div><div class="d">候補者メッセージと企業メッセージを宛先選択で確認・返信、AIが要点抽出</div></div></div>
         <div class="fm"><div class="ic">📄</div><div><div class="t">③ 面談中の書類作成</div><div class="d">文字起こし・メモから履歴書/職務経歴書を生成。完成度ゲージ・PDF体裁・編集/保存</div></div></div>
         <div class="fm"><div class="ic">🎭</div><div><div class="t">④ 感情認識AIで採点</div><div class="d">表情・声・発話量からエンゲージメントを可視化（カメラ重畳表示）</div></div></div>
         <div class="fm"><div class="ic">⭐</div><div><div class="t">⑤ 人間性・スキルのスコアリング</div><div class="d">営業6項目＋人間性6項目を六角形・10段階で。AI推奨＋CA評価入力、入社後の成長予測（5社）</div></div></div>
@@ -1882,7 +2013,7 @@
       <h3 style="margin:22px 0 12px;font-size:15px">技術構成イメージ</h3>
       <div class="three">
         <div class="card"><div class="bd"><b>🖥 フロント</b><p style="font-size:12.5px;color:var(--sub);margin-top:6px">Web（PC）＋ モバイル（PWA/アプリ）。面談ルームはWebRTC。ブランドカラー（ブルー#0095D4／モーヴ#C3A4B2）</p></div></div>
-        <div class="card"><div class="bd"><b>🤖 AI/連携</b><p style="font-size:12.5px;color:var(--sub);margin-top:6px">音声認識(文字起こし)・感情認識AI・要約/生成LLM・LINE Messaging API・スプレッドシート・履歴書作成サービス連携</p></div></div>
+        <div class="card"><div class="bd"><b>🤖 AI/連携</b><p style="font-size:12.5px;color:var(--sub);margin-top:6px">音声認識(文字起こし)・感情認識AI・要約/生成LLM・Handshaxメッセージ（自社基盤）・スプレッドシート・履歴書作成サービス連携</p></div></div>
         <div class="card"><div class="bd"><b>🔒 データ/権限</b><p style="font-size:12.5px;color:var(--sub);margin-top:6px">録画・個人情報の暗号化保存、同意管理、アクセス権限。スコア・AI出力は補助指標として明示</p></div></div>
       </div>
       <div class="note">⚠️ 録画・感情認識・スコアリングは候補者の同意取得とプライバシー配慮（保存期間・利用目的の明示）が前提です。最終判断はCAが行います。</div>
@@ -1998,6 +2129,8 @@
       pipe:[p('pass','通過'),p('pass','通過'),p('pass','通過'),p('pass','通過'),p('offer','内定')],
       cos:[['クラウド□□株式会社','done','内定','done','最終 通過','条件確認・意思決定の支援中']]},
   };
+  // 候補者 管理ID（全員に割当）
+  const PF_MID={tanaka:'HX-2026-0001',sato:'HX-2026-0002',suzuki:'HX-2026-0003',takahashi:'HX-2026-0004',ito:'HX-2026-0005',watanabe:'HX-2026-0006',yamamoto:'HX-2026-0007'};
   const DOTSYM={pass:'✓',fail:'✕',cur:'●',pend:'○',offer:'✓'};
   function renderStepper(pipe){
     return pipe.map((s,i)=>{
@@ -2165,6 +2298,28 @@
       s+=`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anc}" dominant-baseline="middle" font-size="10.5" fill="#5B6B7B" font-weight="600">${lb}</text>`;});
     return `<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
   }
+  function drawRadar3(short,pre,proj,post){
+    const cx=150,cy=120,R=78,N=6;
+    const ang=i=>(-90+i*60)*Math.PI/180;
+    const pt=(i,r)=>[cx+r*Math.cos(ang(i)),cy+r*Math.sin(ang(i))];
+    let s='';
+    [2,4,6,8,10].forEach(l=>{const p=[...Array(N)].map((_,i)=>pt(i,R*l/10).map(n=>n.toFixed(1)).join(',')).join(' ');s+=`<polygon points="${p}" fill="none" stroke="#e2e8f0" stroke-width="1"/>`;});
+    for(let i=0;i<N;i++){const[x,y]=pt(i,R);s+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#e2e8f0" stroke-width="1"/>`;}
+    // 入社前（グレー）
+    const pre_=pre.map((v,i)=>pt(i,R*v/10).map(n=>n.toFixed(1)).join(',')).join(' ');
+    s+=`<polygon points="${pre_}" fill="rgba(120,135,150,.12)" stroke="#9aa7b2" stroke-width="2"/>`;
+    // 成長予測（オレンジ点線）
+    const prj=proj.map((v,i)=>pt(i,R*v/10).map(n=>n.toFixed(1)).join(',')).join(' ');
+    s+=`<polygon points="${prj}" fill="rgba(240,151,58,.10)" stroke="#F0973A" stroke-width="2" stroke-dasharray="5 3"/>`;
+    proj.forEach((v,i)=>{const[x,y]=pt(i,R*v/10);s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.3" fill="#F0973A"/>`;});
+    // 入社後（ブルー）
+    const po=post.map((v,i)=>pt(i,R*v/10).map(n=>n.toFixed(1)).join(',')).join(' ');
+    s+=`<polygon points="${po}" fill="rgba(0,149,212,.18)" stroke="#0095D4" stroke-width="2"/>`;
+    post.forEach((v,i)=>{const[x,y]=pt(i,R*v/10);s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#0095D4"/>`;});
+    short.forEach((lb,i)=>{const[x,y]=pt(i,R*1.32);let anc=x>cx+6?'start':(x<cx-6?'end':'middle');
+      s+=`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anc}" dominant-baseline="middle" font-size="10.5" fill="#5B6B7B" font-weight="600">${lb}</text>`;});
+    return `<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
+  }
   let profGrowOn=true, profCandId='tanaka';
   function renderProfScores(id){
     profCandId=id; const sc=SCORES[id]||SCORES.tanaka;
@@ -2214,8 +2369,11 @@
   const PF_TASKS={tanaka:['mid','二次面談の日程を確定'],sato:['hi','職務経歴書を完成'],suzuki:['lo','書類選考の結果待ち'],takahashi:['hi','一次結果を催促'],ito:['mid','面談実施・書類送付'],watanabe:['hi','再マッチングを実施'],yamamoto:['lo','内定手続きを進行']};
   function openProfile(id){
     const d=CANDIDATES[id]; if(!d){go('profile');return;}
-    document.getElementById('pfCrumb').textContent=d.name;
+    var _mid=PF_MID[id]||'HX-2026-0000';
+    document.getElementById('pfCrumb').textContent=d.name+'（'+_mid+'）';
     document.getElementById('pfName').textContent=d.name;
+    var _me=document.getElementById('pfMid'); if(_me)_me.textContent=_mid;
+    var _mb=document.getElementById('pfMidInfo'); if(_mb)_mb.textContent=_mid;
     document.getElementById('pfAvatar').textContent=d.ini;
     var _tk=(PF_TASKS[id]||['lo','—']); var _cm={hi:['#FBE4E4','#c0392b','🔴 迅速'],mid:['#FCF0D9','#8a5a00','🟡 急ぎ'],lo:['#E1F1FA','#0d6a9a','🔵 通常']}[_tk[0]];
     var _te=document.getElementById('pfTask'); if(_te){_te.style.background=_cm[0];_te.style.color=_cm[1];_te.textContent=_cm[2]+'：'+_tk[1];}
@@ -2246,16 +2404,20 @@
     go('profile');
   }
   function go(s){
+    if(s==='pipeline' && !document.body.classList.contains('mgr')) s='list';
+    if(s==='schedule' && document.body.classList.contains('mgr')) s='teamcal';  // 管理者は候補者調整なし→チーム日程
     document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));
     document.getElementById('s-'+s).classList.add('on');
     let navKey = (s==='profile') ? 'list' : s;  // 候補者プロフィールは「候補者」項目に統合
     if(['docs','score','copy','mindmap','resumeview'].includes(s)) navKey='list';  // アウトプットは候補者詳細に集約
     if(s==='churndetail') navKey='churn';
     if(s==='reason'||s==='jobdetail') navKey='match';  // 紹介理由・求人詳細は「企業マッチング」配下
+    if(s==='afterdetail') navKey='after';  // アフターフォロー詳細
     document.querySelectorAll('.navlink').forEach(a=>a.classList.toggle('on',a.dataset.s===navKey));
     document.querySelectorAll('#mobtabs button').forEach(b=>b.classList.toggle('on',b.dataset.s===navKey));
     document.querySelector('.main').scrollTop=0; window.scrollTo(0,0);
     if(s==='mindmap') setTimeout(drawLinks,30);
+    if(s==='list') renderListPage();
     agentOnScreen(s);
   }
   function setDevice(d){
@@ -2406,7 +2568,7 @@
   }
   function buildJobs(){ renderBars('jobBars',JOBS); renderBars('salBars',SAL); renderBars('ageBars',AGE); }
 
-  /* ===== メッセージ（候補者LINE / 企業） ===== */
+  /* ===== メッセージ（候補者メッセージ / 企業） ===== */
   const bub=(who,t,time)=> who==='them'
     ? `<div class="msg them"><div class="bub">${t}</div><span class="time">${time}</span></div>`
     : `<div class="msg me"><span class="time">${time}</span><div class="bub">${t}</div></div>`;
@@ -2423,7 +2585,7 @@
       ai:[['📌','希望職種：マーケティング'],['✅','<b>TODO：</b>職務経歴書のヒアリング日程を調整','todo']]},
     suzuki:{ini:'鈴',name:'鈴木 涼',thread:[['me','鈴木さん、◇◇テックへ書類を送付しました。結果は数日でご連絡します。','火 15:00'],
       ['them','ありがとうございます！楽しみにしています。','火 15:12']],
-      ai:[['📌','◇◇テックへ書類送付済み（結果待ち）'],['✅','<b>TODO：</b>結果連絡を確認しLINEで共有','todo']]},
+      ai:[['📌','◇◇テックへ書類送付済み（結果待ち）'],['✅','<b>TODO：</b>結果連絡を確認しメッセージで共有','todo']]},
   };
   const CORP_MSG={
     aa:{ini:'△',name:'株式会社△△',thread:[['me','田中健太さんの職務経歴書をお送りします。マネジメント実績と数値志向が強みです。','月 11:00'],
@@ -2957,22 +3119,58 @@
   const slotRow=t=>Math.round((t-CAL_START)*2)+1;
   const fmtT=t=>{const h=Math.floor(t),m=(t-h)*60;return h+':'+(m?'30':'00');};
   const WDAYS=['月','火','水','木','金','土','日'], WDATES=[22,23,24,25,26,27,28];
-  const EVENTS=[
-    {d:0,s:10,e:11,t:'田中 健太 面談',cls:'intv'},
-    {d:0,s:11.5,e:12,t:'チーム定例',cls:'mtg'},
-    {d:0,s:13.5,e:14.5,t:'佐藤 美咲 面談',cls:'intv'},
-    {d:0,s:16,e:17,t:'鈴木 涼 面談',cls:'intv'},
-    {d:1,s:13.5,e:14.5,t:'空き枠',cls:'free'},
-    {d:2,s:10,e:11,t:'空き枠',cls:'free'},
-    {d:2,s:16,e:17,t:'空き枠',cls:'free'},
-    {d:3,s:13.5,e:14.5,t:'高橋 直人 面談',cls:'intv'},
-    {d:3,s:16,e:17,t:'空き枠',cls:'free'},
-    {d:4,s:10,e:11,t:'面談（予定）',cls:'intv'},
-    {d:4,s:13.5,e:14,t:'空き枠',cls:'free'},
-    {d:4,s:15,e:16,t:'1on1 (マネージャー)',cls:'mtg'},
+  function genSchedule(){
+    var ev=[];
+    var intvPerDay=[4,3,5,4,5,3,3];      // 毎日 3〜5 名の面談
+    var afterPerDay=[2,0,1,0,2,0,1];     // 隔日に 1〜2 名のアフターフォロー
+    var pool=['田中 健太','佐藤 美咲','鈴木 涼','高橋 直人','伊藤 さくら','中島 涼介','小川 彩','森 大輔','石井 誠','阿部 由紀','岡田 彩','村上 翔','三浦 健','近藤 誠'];
+    var af=['山本 千尋','田村 拓海','三浦 健','岡田 彩','中川 美優','近藤 誠'];
+    var pi=0, ai=0;
+    for(var d=0; d<7; d++){
+      var slots=[9,10,11,13,14,15,16,17];
+      if(d===0) ev.push({d:d,s:12,e:12.5,t:'チーム定例',cls:'mtg'});
+      if(d===4){ slots=slots.filter(function(x){return x!==15;}); ev.push({d:d,s:15,e:16,t:'1on1（マネージャー）',cls:'mtg'}); }
+      var order=[10,13,15,9,14,16,11,17].filter(function(x){return slots.indexOf(x)>=0;});
+      var k=0, ni=intvPerDay[d], na=afterPerDay[d];
+      var RL=['初回','2回目','3回目'];
+      for(var i=0;i<ni;i++){ var st=order[k++]; var rd=(pi%3); ev.push({d:d,s:st,e:st+1,t:pool[pi++%pool.length]+' 面談（'+RL[rd]+'）',cls:'intv'+(rd+1)}); }
+      for(var y=0;y<na;y++){ var st2=order[k++]; ev.push({d:d,s:st2,e:st2+0.5,t:af[ai++%af.length]+' アフターフォロー',cls:'after'}); }
+      order.slice(k,k+2).forEach(function(st3){ ev.push({d:d,s:st3,e:st3+1,t:'空き枠',cls:'free'}); });
+    }
+    return ev;
+  }
+  const EVENTS=genSchedule();
+  const FILL_SUGGEST=[
+    {cls:'intv1',t:'新規面談・初回（AI提案）',dur:1},
+    {cls:'after',t:'アフターフォロー（AI提案）',dur:0.5},
+    {cls:'intv2',t:'2回目面談（AI提案）',dur:1},
+    {cls:'after',t:'定着フォロー（AI提案）',dur:0.5},
+    {cls:'intv3',t:'3回目面談（AI提案）',dur:1}
   ];
+  var fillTurn=0;
   function timeLabels(){let s='';for(let h=CAL_START;h<CAL_END;h++)s+=`<div class="tlabel" style="grid-row:${slotRow(h)}/span 2">${h}:00</div>`;return s;}
-  function evHTML(e,col){return `<div class="ev ${e.cls}" style="grid-column:${col};grid-row:${slotRow(e.s)}/${slotRow(e.e)}"><div class="t">${e.t}</div><div class="s">${fmtT(e.s)}–${fmtT(e.e)}</div></div>`;}
+  function evHTML(e,col){
+    var isFree=e.cls==='free';
+    var click=isFree?` onclick="fillSlot(${EVENTS.indexOf(e)})" title="クリックで予定を追加"`:'';
+    var label=isFree?'＋ 空き枠（追加）':e.t;
+    return `<div class="ev ${e.cls}"${click} style="grid-column:${col};grid-row:${slotRow(e.s)}/${slotRow(e.e)}"><div class="t">${label}</div><div class="s">${fmtT(e.s)}–${fmtT(e.e)}</div></div>`;
+  }
+  function freeCount(){return EVENTS.filter(function(e){return e.cls==='free';}).length;}
+  function updateFreeBanner(){
+    var n=freeCount(); var c=document.getElementById('freeNudgeCard'); if(!c)return;
+    if(n>0){ c.style.display='block'; var m=document.getElementById('freeNudgeMsg'); if(m)m.textContent='空き枠が '+n+' 件あります — 予定を入れましょう'; }
+    else { c.style.display='block'; var m2=document.getElementById('freeNudgeMsg'); if(m2)m2.textContent='✅ 空き枠はありません。スケジュールは充実しています'; }
+  }
+  function fillSlot(i){
+    var e=EVENTS[i]; if(!e||e.cls!=='free')return;
+    var sug=FILL_SUGGEST[fillTurn%FILL_SUGGEST.length]; fillTurn++;
+    e.cls=sug.cls; e.t=sug.t; e.e=e.s+sug.dur;
+    buildCalendars(); if(window.showToast)showToast('空き枠に「'+sug.t+'」を登録しました');
+  }
+  function fillAllFree(){
+    var n=0; EVENTS.forEach(function(e){ if(e.cls==='free'){ var sug=FILL_SUGGEST[fillTurn%FILL_SUGGEST.length]; fillTurn++; e.cls=sug.cls; e.t=sug.t; e.e=e.s+sug.dur; n++; } });
+    buildCalendars(); if(window.showToast)showToast(n+' 件の空き枠にAI提案の予定を登録しました');
+  }
   function buildWeek(){
     let h='<div class="wk-head" style="grid-template-columns:56px repeat(7,1fr)"><div class="corner"></div>';
     WDAYS.forEach((dw,i)=>{h+=`<div class="dh${i===TODAY_IDX?' today':''}"><div class="dow">${dw}</div><div class="dnum">${WDATES[i]}</div></div>`;});
@@ -2989,9 +3187,9 @@
     h+='</div>'; document.getElementById('calDay').innerHTML=h;
   }
   function buildMonth(){
-    const MEV={22:[{t:'田中 面談',cls:'intv'},{t:'佐藤 面談',cls:'intv'},{t:'鈴木 面談',cls:'intv'}],
-      23:[{t:'空き枠',cls:'free'}],24:[{t:'空き枠',cls:'free'},{t:'空き枠',cls:'free'}],
-      25:[{t:'高橋 面談',cls:'intv'}],26:[{t:'面談（予定）',cls:'intv'},{t:'1on1',cls:'mtg'}],30:[{t:'月次レビュー',cls:'mtg'}]};
+    const MEV={22:[{t:'田中 面談（初回）',cls:'intv1'},{t:'佐藤 面談（2回目）',cls:'intv2'},{t:'山本 アフターフォロー',cls:'after'}],
+      23:[{t:'鈴木 面談（初回）',cls:'intv1'},{t:'空き枠',cls:'free'}],24:[{t:'高橋 面談（3回目）',cls:'intv3'},{t:'田村 アフターフォロー',cls:'after'},{t:'空き枠',cls:'free'}],
+      25:[{t:'伊藤 面談（初回）',cls:'intv1'},{t:'佐藤 面談（2回目）',cls:'intv2'}],26:[{t:'面談（初回）',cls:'intv1'},{t:'三浦 アフターフォロー',cls:'after'},{t:'1on1',cls:'mtg'}],30:[{t:'月次レビュー',cls:'mtg'}]};
     let h='<div class="mo-head">'+WDAYS.map(d=>`<div>${d}</div>`).join('')+'</div><div class="mo-grid">';
     for(let d=1;d<=30;d++){
       const evs=MEV[d]||[]; const today=d===26;
@@ -3017,7 +3215,7 @@
   }
   function calMove(dir){ /* プロトタイプではサンプル週を表示（ナビは将来実装） */ }
   function calToday(){ calView('week'); }
-  function buildCalendars(){ buildWeek(); buildDay(); buildMonth(); }
+  function buildCalendars(){ buildWeek(); buildDay(); buildMonth(); updateFreeBanner(); }
 
   // mindmap links
   function drawLinks(){
@@ -3047,8 +3245,8 @@
   const AGENT = {
     dash:{ctx:"ダッシュボード",urgent:false,
       prop:"本日は面談3件。田中さんの事前準備は完了、佐藤さんの書類が未完成です。まず何から始めますか？",
-      acts:[{t:"優先タスクを並べる"},{t:"未読LINEを要約",g:1}],
-      chips:["今日の段取りは？","未読LINEを要約","佐藤さんの書類状況"]},
+      acts:[{t:"優先タスクを並べる"},{t:"未読メッセージを要約",g:1}],
+      chips:["今日の段取りは？","未読メッセージを要約","佐藤さんの書類状況"]},
     list:{ctx:"候補者一覧",urgent:false,
       prop:"進捗サマリ：内定1名（山本さん）、面談 選考中2名（田中さん二次・高橋さん一次）、書類未送付2名。渡辺さんは一次面談で落選のため再マッチングを推奨します。",
       acts:[{t:"面談結果待ちを確認"},{t:"落選者を再マッチング",g:1}],
@@ -3060,7 +3258,7 @@
     schedule:{ctx:"スケジュール調整",urgent:false,
       prop:"高橋さん(平日午前希望)に空き枠から候補日を3つ提案できます。送信しますか？",
       acts:[{t:"候補日を自動提案"},{t:"前日リマインドを予約",g:1}],
-      chips:["空き枠を最適化","LINEで日程を送る","ダブルブッキングを確認"]},
+      chips:["空き枠を最適化","メッセージで日程を送る","ダブルブッキングを確認"]},
     profile:{ctx:"候補者プロフィール",urgent:false,
       prop:"備考欄から深掘りポイントを3点抽出しました（転居・マネジメント・SaaS志望）。質問リストを作りますか？",
       acts:[{t:"質問リストを作成"},{t:"面談を開始",g:1}],
@@ -3102,7 +3300,7 @@
     "次の質問を提案":"おすすめの質問：「5年後、どんな状態になっていたいですか？ その実現に、今回の転職でどんな経験や環境が必要だと考えていますか？」 — 成長軸の深掘りに直結します。",
     "ここまでを要約":"要約：マネジメント経験(5名)と数値見える化が強み。SaaSへの志望度が高い。残論点は勤務地・年収条件。次はMust軸を深掘りしましょう。",
     "紹介文を生成":"面談内容・感情認識AI(82)・職務経歴書・スコアを統合した紹介文を作成しました。キャッチコピー『数字で組織を動かす、次世代の営業リーダー』、総合84/スキル82/人間性86。画面下部の『AI紹介文ジェネレーター』に反映しています。",
-    "優先タスクを並べる":"本日の優先順：①10:00 田中さん面談（準備OK）②佐藤さんの職務経歴書を完成（残2セクション）③鈴木さんへLINE返信。",
+    "優先タスクを並べる":"本日の優先順：①10:00 田中さん面談（準備OK）②佐藤さんの職務経歴書を完成（残2セクション）③鈴木さんへメッセージ返信。",
     "質問リストを作成":"面談用の質問を5問用意しました：①転居の許容範囲 ②マネジメントの再現性 ③SaaS志望理由の具体化 ④5年後の理想 ⑤譲れない条件。",
     "志望動機を強化":"強化案：『顧客の成功に長期で伴走できるSaaS営業に魅力を感じ、前職のマネジメント経験を活かしチームの成果最大化に貢献したい』",
     "なぜ△△が1位？":"株式会社△△が1位の理由：①年収580〜720万で希望(550万〜)を満たす ②マネジメント候補ポジション＝強みと志向が一致 ③SaaS事業で志望と合致 ④リモート可で転居懸念を解消 ⑤表彰・成果主義文化が前職実績と親和。5項目中5項目が高一致でマッチ度94です。",
@@ -3196,11 +3394,587 @@
   buildRadars();
   buildBcast();
   buildCamOverlay();
+  /* ===== 管理者：チーム管理 ===== */
+  const TEAM_CAS=[
+    {ini:'佐',name:'佐藤 健',   load:80,cap:80,offer:12,score:84,inprog:34,hi:1,mid:2,st:'ok',  stn:'適正'},
+    {ini:'鈴',name:'鈴木 美和', load:88,cap:80,offer:9, score:79,inprog:41,hi:3,mid:2,st:'over',stn:'過剰'},
+    {ini:'高',name:'高橋 亮',   load:76,cap:80,offer:15,score:88,inprog:30,hi:0,mid:1,st:'ok',  stn:'適正'},
+    {ini:'田',name:'田村 彩',   load:80,cap:80,offer:7, score:76,inprog:47,hi:2,mid:4,st:'stag',stn:'滞留'},
+    {ini:'伊',name:'伊藤 拓也', load:72,cap:80,offer:11,score:82,inprog:28,hi:0,mid:2,st:'free',stn:'余力'}
+  ];
+  const TEAM_NEW=[
+    {name:'中村 大輔',mid:'HX-2026-0201',job:'営業（SaaS）',fit:89,rec:'伊藤 拓也',why:'SaaS営業の実績が多く、余力あり'},
+    {name:'小林 由紀',mid:'HX-2026-0202',job:'マーケ',    fit:83,rec:'高橋 亮',  why:'マーケ内定率が高く、稼働に余裕'},
+    {name:'加藤 誠',  mid:'HX-2026-0203',job:'エンジニア',fit:78,rec:'伊藤 拓也',why:'技術職の相性・負荷分散'},
+    {name:'吉田 彩香',mid:'HX-2026-0204',job:'CS',       fit:81,rec:'高橋 亮',  why:'CS領域の平均スコアが高い'},
+    {name:'松本 涼介',mid:'HX-2026-0205',job:'営業',      fit:74,rec:'伊藤 拓也',why:'ポテンシャル層・育成枠に余力'},
+    {name:'井上 麻衣',mid:'HX-2026-0206',job:'人事',      fit:86,rec:'佐藤 健',  why:'人事採用の実績が豊富'}
+  ];
+  const TEAM_QUAL=[
+    {ca:'田村 彩',  cand:'渡辺 亮太',mid:'HX-2026-0006',score:58,emo:'低',flag:true, note:'深掘り不足・クロージング弱い→同席レビュー推奨'},
+    {ca:'鈴木 美和',cand:'佐藤 美咲',mid:'HX-2026-0002',score:69,emo:'中',flag:true, note:'ヒアリング時間が短い'},
+    {ca:'高橋 亮',  cand:'田中 健太',mid:'HX-2026-0001',score:92,emo:'高',flag:false,note:'良好'},
+    {ca:'佐藤 健',  cand:'高橋 直人',mid:'HX-2026-0004',score:85,emo:'高',flag:false,note:'良好'},
+    {ca:'伊藤 拓也',cand:'鈴木 涼',  mid:'HX-2026-0003',score:80,emo:'中',flag:false,note:'標準的'}
+  ];
+  function buildTeamMgmt(){
+    var tot=TEAM_CAS.reduce((a,c)=>a+c.load,0);
+    var off=TEAM_CAS.reduce((a,c)=>a+c.offer,0);
+    var avg=Math.round(TEAM_CAS.reduce((a,c)=>a+c.score,0)/TEAM_CAS.length);
+    // KPI
+    var k=document.getElementById('teamKpi');
+    if(k){k.innerHTML='<div class="tm-grid">'
+      +'<div class="kpi"><div class="lab">👥 担当CA</div><div class="num">5</div><div class="delta">各80名担当</div></div>'
+      +'<div class="kpi"><div class="lab">🧑‍💼 担当候補者 合計</div><div class="num">'+tot+'</div><div class="delta">上限 400名</div></div>'
+      +'<div class="kpi"><div class="lab">🏆 今月の内定 合計</div><div class="num">'+off+'</div><div class="delta up">先月比 +8</div></div>'
+      +'<div class="kpi"><div class="lab">⭐ 平均面談スコア</div><div class="num">'+avg+'</div><div class="delta up">先月比 +3</div></div>'
+      +'</div>'
+      +'<div class="card"><div class="hd"><h3>📊 CA別 実績</h3></div><div class="bd" style="overflow-x:auto">'
+      +'<table class="tm-tbl"><tr><th>CA</th><th>担当</th><th>今月内定</th><th>平均スコア</th><th>選考中</th><th>状態</th></tr>'
+      +TEAM_CAS.map(c=>'<tr><td><span class="miniavatar">'+c.ini+'</span>'+c.name+'</td><td>'+c.load+' / '+c.cap+'</td><td><b>'+c.offer+'</b></td><td>'+c.score+'</td><td>'+c.inprog+'</td><td><span class="tm-st '+c.st+'">'+c.stn+'</span></td></tr>').join('')
+      +'</table></div></div>';}
+    // 振り分け
+    var a=document.getElementById('teamAssign');
+    if(a){a.innerHTML='<p style="font-size:12.5px;color:var(--muted);margin:0 0 8px">新規候補者をAI適合度と各CAの稼働（負荷分散）から最適配分します。ワンクリックで割当。</p>'
+      +'<table class="tm-tbl"><tr><th>候補者</th><th>管理ID</th><th>希望職種</th><th>AI適合</th><th>AI推奨CA（理由）</th><th></th></tr>'
+      +TEAM_NEW.map((n,i)=>'<tr><td>'+n.name+'</td><td><span class="mono" style="font-size:11px">'+n.mid+'</span></td><td>'+n.job+'</td><td><span class="chip done">'+n.fit+'</span></td><td><b>'+n.rec+'</b><br><span style="font-size:11px;color:var(--muted)">'+n.why+'</span></td><td><button class="btn primary sm" onclick="assignCA('+i+',this)">この推奨で割当</button></td></tr>').join('')
+      +'</table>';}
+    // CA別担当状況
+    var l=document.getElementById('teamLoad');
+    if(l){l.innerHTML=TEAM_CAS.map(c=>{
+      var pct=Math.min(100,Math.round(c.load/c.cap*100));
+      var col=c.st==='over'?'var(--danger)':(c.st==='stag'?'#E8A33D':(c.st==='free'?'#1e9e57':'#0095D4'));
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)">'
+        +'<div style="min-width:150px;font-weight:700"><span class="miniavatar">'+c.ini+'</span>'+c.name+'</div>'
+        +'<div style="flex:1"><div class="tm-bar"><i style="width:'+pct+'%;background:'+col+'"></i></div><div style="font-size:11px;color:var(--muted);margin-top:3px">担当 '+c.load+' / '+c.cap+'名（稼働 '+pct+'%）・選考中 '+c.inprog+'</div></div>'
+        +'<div style="min-width:120px;font-size:11.5px">🔴'+c.hi+' 🟡'+c.mid+'</div>'
+        +'<span class="tm-st '+c.st+'">'+c.stn+'</span>'
+        +'<button class="btn ghost sm" style="margin-left:8px" onclick="alert(\''+c.name+' の担当候補者一覧・詳細（デモ）\')">担当を見る</button>'
+        +'</div>';}).join('')
+      +'<p style="font-size:12px;color:var(--muted);margin:10px 0 0">💡 鈴木さんが定員超過、田村さんは選考中の滞留が多め。新規は余力のある伊藤・高橋さんへの配分を推奨。</p>';}
+    // 面談品質
+    var q=document.getElementById('teamQuality');
+    if(q){q.innerHTML='<table class="tm-tbl"><tr><th>CA</th><th>候補者</th><th>面談スコア</th><th>感情AI</th><th>所見</th><th></th></tr>'
+      +TEAM_QUAL.map(r=>'<tr'+(r.flag?' style="background:#FFF6F6"':'')+'><td>'+r.ca+'</td><td>'+r.cand+'<br><span class="mono" style="font-size:10.5px;color:var(--muted)">'+r.mid+'</span></td><td><b style="color:'+(r.flag?'var(--danger)':'var(--ink)')+'">'+r.score+'</b>'+(r.flag?' <span class="tm-st over">要フォロー</span>':'')+'</td><td>'+r.emo+'</td><td style="font-size:11.5px">'+r.note+'</td><td><button class="btn ghost sm" onclick="go(\'room\')">録画レビュー</button></td></tr>').join('')
+      +'</table>';}
+  }
+  function assignCA(i,btn){ var n=TEAM_NEW[i]; btn.textContent='✓ '+n.rec+'へ割当'; btn.disabled=true; btn.className='btn ghost sm'; showToast&&showToast(n.name+' を '+n.rec+' に割り当てました'); }
+  function setRole(r){
+    var mgr=(r==='mgr');
+    document.body.classList.toggle('mgr',mgr);
+    document.getElementById('rtMgr').classList.toggle('on',mgr);
+    document.getElementById('rtCA').classList.toggle('on',!mgr);
+    var lbl=document.getElementById('whoLabel'), av=document.getElementById('whoAv');
+    if(mgr){ lbl.textContent='橋本 一郎｜マネージャー（CA5名 / 候補者400名）'; av.textContent='橋'; go('team'); }
+    else { lbl.textContent='緑川 治士｜CA（担当 80名）'; av.textContent='緑'; go('dash'); }
+  }
+  /* ===== 候補者一覧：担当80名を生成・描画 ===== */
+  const LIST_KNOWN=[
+    {id:'tanaka',dot:'mid',job:'営業（IT）',cc:'stage',cl:'二次面談',co:'株式会社△△ 他1社',upd:'本日'},
+    {id:'sato',dot:'hi',job:'マーケ',cc:'stage',cl:'書類作成中',co:'—',upd:'本日'},
+    {id:'suzuki',dot:'lo',job:'エンジニア',cc:'stage',cl:'書類選考',co:'◇◇テック',upd:'昨日'},
+    {id:'takahashi',dot:'hi',job:'人事',cc:'stage',cl:'一次面談',co:'株式会社▲▲',upd:'6/24'},
+    {id:'ito',dot:'mid',job:'事務',cc:'stage',cl:'面談前',co:'—',upd:'6/24'},
+    {id:'watanabe',dot:'hi',job:'営業',cc:'fail',cl:'落選',co:'●●ソリューションズ 他1社',upd:'6/23'},
+    {id:'yamamoto',dot:'lo',job:'カスタマーサクセス',cc:'done',cl:'内定',co:'クラウド□□',upd:'6/20'}
+  ];
+  const GEN_SUR=['山口','中島','小川','石井','阿部','森','池田','山下','石川','小林','加藤','吉田','山田','佐々木','松本','井上','木村','林','斎藤','清水','山崎','森田','原田','柴田','酒井','工藤','横山','宮崎','宮本','内田','高木','安藤','谷口','大野','丸山','今井','高田','藤田','後藤','岡田','長谷川','村上','近藤','石田','前田','藤井','岡本','三浦','藤原','松田','中川','中野','原','田村','竹内','金子','和田','中山','石原','上田','森本','菅原','吉川','杉山','千葉','村田','増田','大西','三上','浅野','平野','武田','野口'];
+  const GEN_GIV=['翔太','美咲','大輔','彩','誠','由紀','拓也','麻衣','涼介','彩香','健','美和','亮','大樹','さやか','直樹','里奈','駿','optional'];
+  const GEN_GIV2=['翔太','美咲','大輔','彩','誠','由紀','拓也','麻衣','涼介','彩香','健','美和','亮','大樹','さやか','直樹','里奈','駿','花','悠斗','千夏','翼','萌','洋平'];
+  const GEN_JOB=['営業（IT）','マーケ','エンジニア','人事','営業事務','カスタマーサクセス','経理','デザイナー','営業（人材）','コンサル','企画','品質管理','広報','法務','購買','データ分析'];
+  const GEN_STAGE=[['stage','書類選考','lo'],['stage','一次面談','mid'],['stage','二次面談','mid'],['stage','最終面談','hi'],['done','内定','lo'],['sched','書類作成中','lo'],['fail','落選','hi'],['stage','面談前','lo']];
+  const GEN_CO=['株式会社△△ 他1社','◇◇テック','株式会社▲▲','クラウド□□','●●ソリューションズ','—','株式会社□□ 他2社','◎◎システムズ','—'];
+  const GEN_UPD=['本日','昨日','6/28','6/27','6/25','6/24','6/20','6/18','6/15'];
+  const GEN_REASON=['キャリアアップ','年収アップ','裁量を広げたい','ワークライフバランス','モダンな技術環境','事業貢献度を高めたい','U/Iターン','安定志向'];
+  function pipeFor(label){
+    if(label==='書類選考')return [p('cur','送付済み・結果待ち'),p('pend','未着手'),p('pend','未着手'),p('pend','—'),p('pend','—')];
+    if(label==='一次面談')return [p('pass','通過'),p('cur','日程調整中'),p('pend','未着手'),p('pend','—'),p('pend','—')];
+    if(label==='二次面談')return [p('pass','通過'),p('pass','通過'),p('cur','調整中'),p('pend','—'),p('pend','—')];
+    if(label==='最終面談')return [p('pass','通過'),p('pass','通過'),p('pass','通過'),p('cur','調整中'),p('pend','—')];
+    if(label==='内定')return [p('pass','通過'),p('pass','通過'),p('pass','通過'),p('pass','通過'),p('offer','内定')];
+    if(label==='落選')return [p('pass','通過'),p('fail','落選'),p('pend','—'),p('pend','—'),p('pend','—')];
+    return [p('pend','未送付'),p('pend','未着手'),p('pend','未着手'),p('pend','—'),p('pend','—')];
+  }
+  const midCell=m=>'<td><span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;font-weight:700;letter-spacing:.3px;color:#13313F">'+m+'</span></td>';
+  function candRow(id,ini,name,mid,dot,job,cc,cl,co,upd){
+    return '<tr class="row" onclick="openProfile(\''+id+'\')">'
+      +'<td style="text-align:center"><span class="tdot '+dot+'"></span></td>'
+      +'<td><span class="miniavatar">'+ini+'</span>'+name+'</td>'
+      +midCell(mid)
+      +'<td>'+job+'</td><td><span class="chip '+cc+'">'+cl+'</span></td>'
+      +'<td>'+co+'</td><td>'+upd+'</td>'
+      +'<td><button class="btn primary sm" onclick="event.stopPropagation();openProfile(\''+id+'\')">詳細 →</button></td></tr>';
+  }
+  var LIST_ALL=[];
+  const STAGE_RANK={'面談前':0,'書類作成中':1,'書類選考':2,'一次面談':3,'二次面談':4,'最終面談':5,'内定':6,'落選':7};
+  const DOT_RANK={hi:0,mid:1,lo:2};
+  const UPD_ORDER=['本日','昨日','6/28','6/27','6/25','6/24','6/23','6/20','6/18','6/15'];
+  function updRank(u){var x=UPD_ORDER.indexOf(u);return x<0?99:x;}
+  function buildCandidateList(){
+    LIST_ALL=[];
+    LIST_KNOWN.forEach(function(k){var d=CANDIDATES[k.id];LIST_ALL.push({id:k.id,ini:d.ini,name:d.name,mid:PF_MID[k.id],dot:k.dot,job:k.job,cc:k.cc,cl:k.cl,co:k.co,upd:k.upd});});
+    for(var i=8;i<=80;i++){
+      var idx=i-8;
+      var sur=GEN_SUR[idx%GEN_SUR.length];
+      var giv=GEN_GIV2[(idx*5+3)%GEN_GIV2.length];
+      var name=sur+' '+giv, ini=sur.charAt(0);
+      var st=GEN_STAGE[(idx*3+1)%GEN_STAGE.length];
+      var job=GEN_JOB[(idx*7+2)%GEN_JOB.length];
+      var co=GEN_CO[(idx*2+1)%GEN_CO.length];
+      var upd=GEN_UPD[(idx*3)%GEN_UPD.length];
+      var mid='HX-2026-'+String(i).padStart(4,'0');
+      var key='c'+i;
+      if(!CANDIDATES[key]){
+        CANDIDATES[key]={ini:ini,name:name,fit:'適合度 '+(60+((idx*7)%35)),age:(24+(idx%18))+'歳 / '+((idx%2)?'女性':'男性'),
+          cur:job+'（'+(1+(idx%9))+'年）',salary:(380+((idx%12)*20))+'万〜',reason:GEN_REASON[idx%GEN_REASON.length],
+          loc:['東京','リモート希望','神奈川','千葉','リモート可','大阪'][idx%6],timing:['1ヶ月以内','2ヶ月以内','3ヶ月以内','急がない','調整中'][idx%5],
+          note:'（デモデータ）'+job+'の経験。'+GEN_REASON[idx%GEN_REASON.length]+'を志向。',
+          main:(co==='—'?'メイン応募：未定':'メイン応募：'+co),
+          pipe:pipeFor(st[1]),
+          cos:[[ (co==='—'?'（応募先 未定）':co),'stage',st[1],'sched','—','（デモ）選考を進行中']]};
+        PF_MID[key]=mid;
+      }
+      LIST_ALL.push({id:key,ini:ini,name:name,mid:mid,dot:st[2],job:job,cc:st[0],cl:st[1],co:co,upd:upd});
+    }
+    renderListView();
+  }
+  /* ===== 管理者：チーム候補者一覧（400名・列ソート） ===== */
+  const MGR_CANDS=(function(){
+    var CAS5=[{name:'佐藤 健',col:'#0095D4'},{name:'鈴木 美和',col:'#E8823A'},{name:'高橋 亮',col:'#1e9e57'},{name:'田村 彩',col:'#7C5CBF'},{name:'伊藤 拓也',col:'#E85A8A'}];
+    var arr=[];
+    for(var i=0;i<400;i++){
+      var sur=GEN_SUR[i%GEN_SUR.length], giv=GEN_GIV2[(i*7+3)%GEN_GIV2.length];
+      var ca=CAS5[Math.floor(i/80)%5];
+      var st=GEN_STAGE[(i*3+1)%GEN_STAGE.length];
+      var job=GEN_JOB[(i*5+2)%GEN_JOB.length];
+      var co=GEN_CO[(i*2+1)%GEN_CO.length];
+      var dot=(st[1]==='落選')?'hi':(i%7===0?'hi':(i%3===0?'mid':'lo'));
+      arr.push({name:sur+' '+giv, mid:'HX-2026-'+String(i+1).padStart(4,'0'), ca:ca.name, caCol:ca.col, cc:st[0], cl:st[1], job:job, co:(co==='—'?'（未定）':co), dot:dot});
+    }
+    return arr;
+  })();
+  var mgrSort={key:'ca',dir:1};
+  function mgrSortBy(k){ if(mgrSort.key===k) mgrSort.dir*=-1; else {mgrSort.key=k;mgrSort.dir=1;} renderQuick(); renderMgrList(); }
+  function mgrSetSort(k){ mgrSort.key=k; mgrSort.dir=1; renderQuick(); renderMgrList(); }
+  function renderMgrList(){
+    var t=document.getElementById('listTable'); if(!t)return;
+    var rows=MGR_CANDS.filter(mgrMatch), k=mgrSort.key, dir=mgrSort.dir;
+    setCount(rows.length, MGR_CANDS.length);
+    rows.sort(function(a,b){var va,vb;
+      if(k==='stage'){va=STAGE_RANK[a.cl];vb=STAGE_RANK[b.cl];}
+      else if(k==='alert'){va=DOT_RANK[a.dot];vb=DOT_RANK[b.dot];}
+      else {va=(a[k]||'').toString();vb=(b[k]||'').toString();}
+      if(va<vb)return -1*dir; if(va>vb)return 1*dir; return 0; });
+    function th(key,label,center){var on=mgrSort.key===key;var arw=on?(mgrSort.dir>0?'▲':'▼'):'⇅';return '<th class="sortable'+(on?' sorted':'')+'"'+(center?' style="text-align:center"':'')+' onclick="mgrSortBy(\''+key+'\')">'+label+'<span class="arw">'+arw+'</span></th>';}
+    var head='<tr>'+th('alert','アラート',true)+th('name','候補者名')+'<th>管理ID</th>'+th('ca','CA担当者')+th('stage','進捗状況')+th('job','希望職種')+th('co','推薦企業')+'<th>詳細</th></tr>';
+    var body=rows.map(function(r){return '<tr>'
+      +'<td style="text-align:center"><span class="tdot '+r.dot+'"></span></td>'
+      +'<td>'+r.name+'</td>'
+      +'<td><span class="mono" style="font-size:11px;color:var(--muted)">'+r.mid+'</span></td>'
+      +'<td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+r.caCol+';margin-right:5px"></span>'+r.ca+'</td>'
+      +'<td><span class="chip '+r.cc+'">'+r.cl+'</span></td>'
+      +'<td>'+r.job+'</td>'
+      +'<td>'+r.co+'</td>'
+      +'<td><button class="btn primary sm" onclick="openMgrProfile(\''+r.mid+'\')">詳細 →</button></td></tr>';}).join('');
+    t.innerHTML=head+'<tbody>'+body+'</tbody>';
+  }
+  function openMgrProfile(mid){
+    var r=MGR_CANDS.find(function(x){return x.mid===mid;}); if(!r)return;
+    if(!CANDIDATES[mid]){
+      CANDIDATES[mid]={ini:r.name.charAt(0),name:r.name,fit:'適合度 '+(60+(mid.charCodeAt(9)||0)%35),age:'—',cur:r.job,salary:'—',reason:'—',loc:'—',timing:'—',
+        note:'（チーム候補者）担当CA：'+r.ca+' ／ 希望職種：'+r.job,
+        main:(r.co==='（未定）'?'メイン応募：未定':'メイン応募：'+r.co),
+        pipe:pipeFor(r.cl),
+        cos:[[ (r.co==='（未定）'?'（応募先 未定）':r.co),'stage',r.cl,'sched','—','担当 '+r.ca]]};
+      PF_MID[mid]=mid;
+    }
+    openProfile(mid);
+  }
+  var caSort={key:'default',dir:1};
+  function caSortBy(k){ if(caSort.key===k) caSort.dir*=-1; else {caSort.key=k;caSort.dir=1;} renderListView(); }
+  function caSetSort(k){ caSort.key=k; caSort.dir=1; renderListView(); }
+  /* ===== フィルター ===== */
+  var caFilter={alert:'',stage:'',job:'',q:''}, mgrFilter={alert:'',ca:'',stage:'',job:'',q:''};
+  var STAGE_OPTS=['面談前','書類作成中','書類選考','一次面談','二次面談','最終面談','内定','落選'];
+  var ALERT_OPTS=[['hi','🔴 迅速'],['mid','🟡 急ぎ'],['lo','🔵 通常']];
+  function alertOptHtml(cur){ return ALERT_OPTS.map(function(o){return '<option value="'+o[0]+'"'+(cur===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join(''); }
+  var CA5_NAMES=['佐藤 健','鈴木 美和','高橋 亮','田村 彩','伊藤 拓也'];
+  function setCaFilter(k,v){ caFilter[k]=v; renderList(); }
+  function clearCaFilter(){ caFilter={alert:'',stage:'',job:'',q:''}; renderListView(); }
+  function setMgrFilter(k,v){ mgrFilter[k]=v; renderMgrList(); }
+  function clearMgrFilter(){ mgrFilter={alert:'',ca:'',stage:'',job:'',q:''}; renderListView(); }
+  function optHtml(list,cur){ return list.map(function(o){return '<option'+(cur===o?' selected':'')+'>'+o+'</option>';}).join(''); }
+  function renderFilters(){
+    var fl=document.getElementById('listFilter'); if(!fl)return;
+    var mgr=document.body.classList.contains('mgr');
+    var jobs=GEN_JOB.slice();
+    if(mgr){
+      fl.innerHTML='<b style="font-size:12px">絞り込み：</b>'
+        +'<select onchange="setMgrFilter(\'alert\',this.value)"><option value="">アラート：すべて</option>'+alertOptHtml(mgrFilter.alert)+'</select>'
+        +'<select onchange="setMgrFilter(\'ca\',this.value)"><option value="">CA担当：すべて</option>'+optHtml(CA5_NAMES,mgrFilter.ca)+'</select>'
+        +'<select onchange="setMgrFilter(\'stage\',this.value)"><option value="">進捗：すべて</option>'+optHtml(STAGE_OPTS,mgrFilter.stage)+'</select>'
+        +'<select onchange="setMgrFilter(\'job\',this.value)"><option value="">職種：すべて</option>'+optHtml(jobs,mgrFilter.job)+'</select>'
+        +'<input class="search" oninput="setMgrFilter(\'q\',this.value)" placeholder="🔍 氏名・管理ID・企業で検索" value="'+mgrFilter.q.replace(/"/g,'')+'">'
+        +'<button class="lclear" onclick="clearMgrFilter()">クリア</button>'
+        +'<span class="lcount" id="listCount"></span>';
+    } else {
+      fl.innerHTML='<b style="font-size:12px">絞り込み：</b>'
+        +'<select onchange="setCaFilter(\'alert\',this.value)"><option value="">アラート：すべて</option>'+alertOptHtml(caFilter.alert)+'</select>'
+        +'<select onchange="setCaFilter(\'stage\',this.value)"><option value="">進捗：すべて</option>'+optHtml(STAGE_OPTS,caFilter.stage)+'</select>'
+        +'<select onchange="setCaFilter(\'job\',this.value)"><option value="">職種：すべて</option>'+optHtml(jobs,caFilter.job)+'</select>'
+        +'<input class="search" oninput="setCaFilter(\'q\',this.value)" placeholder="🔍 氏名・管理IDで検索" value="'+caFilter.q.replace(/"/g,'')+'">'
+        +'<button class="lclear" onclick="clearCaFilter()">クリア</button>'
+        +'<span class="lcount" id="listCount"></span>';
+    }
+  }
+  function caMatch(r){ return (!caFilter.alert||r.dot===caFilter.alert) && (!caFilter.stage||r.cl===caFilter.stage) && (!caFilter.job||r.job===caFilter.job) && (!caFilter.q|| (r.name+ ' '+r.mid).toLowerCase().indexOf(caFilter.q.toLowerCase())>=0); }
+  function mgrMatch(r){ return (!mgrFilter.alert||r.dot===mgrFilter.alert) && (!mgrFilter.ca||r.ca===mgrFilter.ca) && (!mgrFilter.stage||r.cl===mgrFilter.stage) && (!mgrFilter.job||r.job===mgrFilter.job) && (!mgrFilter.q|| (r.name+' '+r.mid+' '+r.co).toLowerCase().indexOf(mgrFilter.q.toLowerCase())>=0); }
+  function setCount(n,total){ var c=document.getElementById('listCount'); if(c)c.textContent=n+' / '+total+' 名'; }
+  var QUICK_CA=[{k:'default',l:'既定（担当順）'},{k:'stage',l:'進捗順'},{k:'alert',l:'アラート優先'},{k:'upd',l:'更新が新しい'},{k:'name',l:'氏名順'}];
+  var QUICK_MGR=[{k:'ca',l:'CA担当者別'},{k:'alert',l:'アラート優先'},{k:'stage',l:'進捗順'},{k:'name',l:'氏名順'},{k:'co',l:'推薦企業別'}];
+  function renderQuick(){
+    var q=document.getElementById('listQuick'); if(!q)return;
+    var mgr=document.body.classList.contains('mgr');
+    var cur=mgr?mgrSort:caSort, list=mgr?QUICK_MGR:QUICK_CA, fn=mgr?'mgrSetSort':'caSetSort';
+    var chips=list.map(function(o){return '<button class="qchip'+(cur.key===o.k?' on':'')+'" onclick="'+fn+'(\''+o.k+'\')">'+o.l+'</button>';}).join('');
+    var dirLabel=cur.dir>0?'▲ 昇順':'▼ 降順';
+    q.innerHTML='<span class="qlab">並び替え：</span>'+chips+'<button class="qdir" onclick="'+(mgr?'toggleDir(true)':'toggleDir(false)')+'" title="昇順/降順を切替">'+dirLabel+'</button>';
+  }
+  function toggleDir(mgr){ if(mgr){mgrSort.dir*=-1;renderQuick();renderMgrList();} else {caSort.dir*=-1;renderListView();} }
+  function renderListView(){
+    var t=document.getElementById('listTable'); if(!t)return;
+    renderFilters(); renderQuick();
+    if(document.body.classList.contains('mgr')){ renderMgrList(); }
+    else {
+      var cth=function(key,label,center){var on=caSort.key===key;var arw=on?(caSort.dir>0?'▲':'▼'):'⇅';return '<th class="sortable'+(on?' sorted':'')+'"'+(center?' style="text-align:center"':'')+' onclick="caSortBy(\''+key+'\')">'+label+'<span class="arw">'+arw+'</span></th>';};
+      t.innerHTML='<tr>'+cth('alert','アラート',true)+cth('name','候補者')+cth('mid','管理ID')+cth('job','希望職種')+cth('stage','選考進捗')+cth('co','紹介企業')+cth('upd','更新')+'<th>詳細</th></tr><tbody id="listBody"></tbody>';
+      renderList();
+    }
+  }
+  function renderListPage(){
+    var mgr=document.body.classList.contains('mgr');
+    var set=function(id,txt){var e=document.getElementById(id);if(e)e.textContent=txt;};
+    var show=function(id,on){var e=document.getElementById(id);if(e)e.style.display=on?'':'none';};
+    set('listTitle', mgr?'チーム候補者一覧':'候補者一覧');
+    set('listLead', mgr?'チーム5名の担当候補者 全400名を横断で管理。候補者名・CA担当者・進捗状況・推薦企業を一覧し、各項目の見出しクリックでソートできます。':'担当候補者の選考進捗を一覧で管理。各候補者の現在の段階（書類選考／一次面談／二次面談／最終面談／内定／落選）をタイトルで表示し、行をクリックすると詳細プロフィールで各段階の合否を確認できます。');
+    set('kpiActiveLab', mgr?'📋 チーム候補者':'📋 担当候補者');
+    set('kpiActiveNum', mgr?'400':'80');
+    set('listCardTitle', mgr?'チーム候補者と選考進捗':'候補者と選考進捗');
+    set('listCardSub', mgr?'全400名・見出しクリックでソート':'担当 全80名・見出しクリックでソート');
+    show('listAlertCard', !mgr); show('listLegend', !mgr); show('listNote', !mgr);
+    var ss=document.getElementById('listSort'); if(ss)ss.style.display='none';
+    buildCandidateList();
+  }
+  function renderList(){
+    var rows=LIST_ALL.filter(caMatch), k=caSort.key, dir=caSort.dir;
+    setCount(rows.length, LIST_ALL.length);
+    if(k==='alert') rows.sort((a,b)=>(DOT_RANK[a.dot]-DOT_RANK[b.dot])*dir);
+    else if(k==='stage') rows.sort((a,b)=>(STAGE_RANK[a.cl]-STAGE_RANK[b.cl])*dir);
+    else if(k==='upd') rows.sort((a,b)=>(updRank(a.upd)-updRank(b.upd))*dir);
+    else if(k==='name'||k==='mid'||k==='job'||k==='co') rows.sort(function(a,b){var va=(a[k]||'').toString(),vb=(b[k]||'').toString();return va<vb?-1*dir:(va>vb?1*dir:0);});
+    var body=document.getElementById('listBody'); if(!body)return;
+    body.innerHTML=rows.map(function(r){return candRow(r.id,r.ini,r.name,r.mid,r.dot,r.job,r.cc,r.cl,r.co,r.upd);}).join('');
+  }
+  /* ===== 本日の新規候補者：挨拶メッセージ自動送信 ===== */
+  const TODAY_NEW=[
+    {name:'森 大輔',   mid:'HX-2026-0081',job:'営業（IT）',sent:false},
+    {name:'小川 彩',   mid:'HX-2026-0082',job:'マーケ',    sent:false},
+    {name:'石井 誠',   mid:'HX-2026-0083',job:'エンジニア',sent:false},
+    {name:'阿部 由紀', mid:'HX-2026-0084',job:'カスタマーサクセス',sent:false}
+  ];
+  function greetText(name){ return name.split(' ')[0]+'様、初めまして。担当キャリアアドバイザーの緑川 治士です。この度はご登録ありがとうございます。まずは現在のご状況・ご希望を伺うため、30分ほどオンラインでお話しできればと思います。ご都合のよい日時をいくつかお知らせください。'; }
+  function buildTodayNew(){
+    var b=document.getElementById('todayNewBody'); if(!b)return;
+    b.innerHTML=TODAY_NEW.map(function(c,i){
+      return '<div class="tn-row" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)">'
+        +'<div style="min-width:190px"><span class="miniavatar">'+c.name.charAt(0)+'</span><b>'+c.name+'</b><br><span class="mono" style="font-size:10.5px;color:var(--muted)">'+c.mid+'</span> ・ <span style="font-size:11.5px;color:var(--muted)">'+c.job+'</span></div>'
+        +'<div style="flex:1;font-size:12px;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:8px 10px">✨ 自動生成：'+greetText(c.name)+'</div>'
+        +'<div id="tnStatus'+i+'" style="min-width:120px;text-align:right">'
+          +(c.sent?'<span class="chip done">✓ 送信済み</span>':'<button class="btn primary sm" onclick="greetSend('+i+')">✉ 挨拶を送信</button>')
+        +'</div></div>';
+    }).join('')
+    +'<div style="font-size:11.5px;color:var(--sub);margin-top:8px">💡 挨拶はテンプレートからAIが自動生成。個別に送信、または上部の「一括送信」でまとめて送れます。</div>';
+    var all=TODAY_NEW.every(function(c){return c.sent;});
+    var ab=document.getElementById('greetAllBtn');
+    if(ab){ if(all){ab.textContent='✓ 全員送信済み';ab.disabled=true;ab.className='btn ghost sm';} else {ab.textContent='✉ 全員に一括送信';ab.disabled=false;ab.className='btn primary sm';} }
+  }
+  function greetSend(i){ TODAY_NEW[i].sent=true; buildTodayNew(); if(window.showToast)showToast(TODAY_NEW[i].name+' に挨拶メッセージを送信しました'); }
+  function greetSendAll(){ TODAY_NEW.forEach(function(c){c.sent=true;}); buildTodayNew(); if(window.showToast)showToast('本日の新規候補者 全員に挨拶メッセージを一括送信しました'); }
+  /* ===== アフターフォロー（入社後の定着支援） ===== */
+  const AC_MONTHS=[1,3,6,12,18,24];
+  const AFTER_CARE=[
+    {id:'yamamoto',name:'山本 千尋',mid:'HX-2026-0007',co:'クラウド□□株式会社',job:'カスタマーサクセス',join:'2025/08',elapsed:11,base:82,retention:'stable',
+     sessions:[
+      {st:'done',sat:4,growth:'順調に立ち上がり',skill:'オンボード完了・基本業務を習得',pay:'—',note:'人間関係良好。裁量が広がりモチベーション高い。',score:83},
+      {st:'done',sat:4,growth:'成長実感あり',skill:'新規顧客の担当を開始',pay:'—',note:'業務範囲が拡大。上長評価も良好。',score:85},
+      {st:'done',sat:5,growth:'高い',skill:'後輩指導・改善提案も',pay:'+3%（半期評価）',note:'半期評価で高評価。定着は安定。',score:88},
+      {st:'next',due:'2026/08'},
+      {st:'todo',due:'2027/02'},
+      {st:'todo',due:'2027/08'}
+     ]},
+    {id:'ac_tamura',name:'田村 拓海',mid:'HX-2026-0091',co:'◎◎システムズ',job:'エンジニア',join:'2025/02',elapsed:17,base:79,retention:'watch',
+     sessions:[
+      {st:'done',sat:4,growth:'順調',skill:'開発環境に適応',pay:'—',note:'立ち上がりは順調。',score:80},
+      {st:'done',sat:3,growth:'やや停滞',skill:'担当領域が固定化',pay:'—',note:'新しい挑戦が少ないとの声。',score:80},
+      {st:'done',sat:3,growth:'停滞感',skill:'スキル拡張が限定的',pay:'昇給なし',note:'成長実感が乏しい。要フォロー。',score:78},
+      {st:'done',sat:3,growth:'横ばい',skill:'変化なし',pay:'昇給なし',note:'モチベーション低下傾向。異動/研修を企業へ相談。',score:77},
+      {st:'next',due:'2026/08'},
+      {st:'todo',due:'2027/02'}
+     ]},
+    {id:'ac_sasaki',name:'佐々木 麻衣',mid:'HX-2026-0092',co:'株式会社▲▲',job:'人事',join:'2024/07',elapsed:24,base:85,retention:'risk',
+     sessions:[
+      {st:'done',sat:4,growth:'順調',skill:'採用業務を習得',pay:'—',note:'立ち上がり良好。',score:86},
+      {st:'done',sat:4,growth:'成長実感',skill:'制度設計に参画',pay:'—',note:'順調。',score:87},
+      {st:'done',sat:3,growth:'鈍化',skill:'業務過多',pay:'+2%',note:'業務負荷が高く疲弊の兆し。',score:84},
+      {st:'done',sat:2,growth:'停滞',skill:'裁量不足',pay:'昇給なし',note:'評価と処遇のミスマッチ。離職検討の発言あり。',score:79},
+      {st:'done',sat:2,growth:'不満',skill:'停滞',pay:'昇給なし',note:'離職リスク高。企業と条件見直し・別求人も並行検討。',score:76},
+      {st:'next',due:'2026/07'}
+     ]}
+  ];
+  const AC_RADAR={
+    yamamoto:{preS:[7,8,6,6,7,7],preH:[7,7,7,8,8,7],projS:[8,9,7,8,8,8],projH:[8,8,8,9,9,8],postS:[8,9,8,8,8,9],postH:[8,8,9,9,9,8]},
+    ac_tamura:{preS:[7,6,7,6,6,6],preH:[7,6,6,7,7,6],projS:[8,7,8,7,8,7],projH:[8,7,7,8,8,7],postS:[7,6,7,6,6,6],postH:[7,6,6,7,6,6]},
+    ac_sasaki:{preS:[8,8,7,7,8,7],preH:[8,7,8,8,8,8],projS:[9,8,8,8,9,8],projH:[8,8,8,9,9,8],postS:[7,7,6,6,6,6],postH:[6,5,6,6,6,5]}
+  };
+  const RET={stable:['stable','定着（安定）','#E8F6EE','#1e7e46'],watch:['watch','要観察','#FCF0D9','#8a5a00'],risk:['risk','離職リスク','#FBE4E4','#c0392b']};
+  function acDoneCount(c){return c.sessions.filter(x=>x.st==='done').length;}
+  function acCurScore(c){var d=c.sessions.filter(x=>x.st==='done');return d.length?d[d.length-1].score:c.base;}
+  function acLastSat(c){var d=c.sessions.filter(x=>x.st==='done');return d.length?d[d.length-1].sat:null;}
+  function acLastPay(c){var d=c.sessions.filter(x=>x.st==='done').filter(x=>x.pay&&x.pay!=='—');return d.length?d[d.length-1].pay:'—';}
+  function buildAfterCare(){
+    var total=AFTER_CARE.length;
+    var stable=AFTER_CARE.filter(c=>c.retention==='stable').length;
+    var risk=AFTER_CARE.filter(c=>c.retention==='risk').length;
+    var doneAll=AFTER_CARE.reduce((a,c)=>a+acDoneCount(c),0);
+    var schedAll=AFTER_CARE.reduce((a,c)=>a+c.sessions.filter(x=>x.st!=='todo').length,0);
+    var rate=Math.round((total-risk)/total*100);
+    var k=document.getElementById('afterKpis');
+    if(k)k.innerHTML=''
+      +'<div class="kpi"><div class="lab">🌱 定着率</div><div class="num" style="color:var(--ok)">'+rate+'%</div><div class="delta">在籍中 '+(total-0)+' / '+total+'名</div></div>'
+      +'<div class="kpi"><div class="lab">🧑‍💼 入社者（フォロー中）</div><div class="num">'+total+'</div><div class="delta">計6回のフォロー</div></div>'
+      +'<div class="kpi"><div class="lab">✅ フォロー実施率</div><div class="num">'+Math.round(doneAll/schedAll*100)+'%</div><div class="delta">'+doneAll+' / '+schedAll+' 回</div></div>'
+      +'<div class="kpi"><div class="lab">⚠ 離職リスク</div><div class="num" style="color:var(--danger)">'+risk+'</div><div class="delta dn">要フォロー</div></div>';
+    var b=document.getElementById('afterBody');
+    if(!b)return;
+    var head='<table class="tm-tbl"><tr><th>入社者</th><th>入社企業 / 職種</th><th>入社</th><th>経過</th><th>フォロー進捗</th><th>スコア改訂</th><th>定着</th><th></th></tr>';
+    var rows=AFTER_CARE.map(function(c){
+      var dc=acDoneCount(c), cur=acCurScore(c);
+      var dots=AC_MONTHS.map(function(m,i){var st=c.sessions[i].st;var col=st==='done'?'#1e9e57':(st==='next'?'#0095D4':'#d6dde3');return '<span title="'+m+'ヶ月" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:'+col+';margin-right:3px"></span>';}).join('');
+      var r=RET[c.retention];
+      var arrow=cur>c.base?'▲':(cur<c.base?'▼':'→');var acol=cur>c.base?'#1e7e46':(cur<c.base?'#c0392b':'#5c6b7a');
+      return '<tr><td><b>'+c.name+'</b><br><span class="mono" style="font-size:10.5px;color:var(--muted)">'+c.mid+'</span></td>'
+        +'<td>'+c.co+'<br><span style="font-size:11px;color:var(--muted)">'+c.job+'</span></td>'
+        +'<td>'+c.join+'</td><td>'+c.elapsed+'ヶ月</td>'
+        +'<td>'+dots+' <span style="font-size:11px;color:var(--muted)">'+dc+'/6</span></td>'
+        +'<td>'+c.base+' <b style="color:'+acol+'">'+arrow+' '+cur+'</b></td>'
+        +'<td><span class="tm-st '+r[0]+'">'+r[1]+'</span></td>'
+        +'<td><button class="btn primary sm" onclick="openAfter(\''+c.id+'\')">詳細・面談</button></td></tr>';
+    }).join('');
+    b.innerHTML=head+rows+'</table><p style="font-size:12px;color:var(--muted);margin:10px 0 0">💡 満足度・成長・昇給の変化からスコアを改訂。低下傾向は早期に検知し、企業への条件見直しや別求人の並行提案で定着を支援します。</p>';
+  }
+  var acCur=null;
+  function openAfter(id){
+    var c=AFTER_CARE.find(x=>x.id===id); if(!c){go('after');return;} acCur=c;
+    document.getElementById('acName').textContent=c.name;
+    document.getElementById('acTitle').innerHTML='🌱 '+c.name+' <span class="mono" style="font-size:13px;color:var(--muted)">'+c.mid+'</span> <span class="pill">'+c.co+'</span>';
+    var r=RET[c.retention];
+    var msg={stable:'定着は安定しています。成長・満足度ともに良好です。',watch:'成長の停滞・昇給なしなど注意サインがあります。企業へ役割拡大や研修を相談しましょう。',risk:'離職リスクが高い状態です。企業との条件見直し、または別求人の並行提案で早期に支援してください。'}[c.retention];
+    document.getElementById('acBanner').innerHTML='<div class="card" style="margin-bottom:14px;border-left:5px solid '+r[3]+';background:'+r[2]+'"><div class="bd" style="padding:12px 14px"><b style="color:'+r[3]+'">'+r[1]+'</b> ・ '+msg+'</div></div>';
+    var cur=acCurScore(c), sat=acLastSat(c), pay=acLastPay(c);
+    var arrow=cur>c.base?'▲':(cur<c.base?'▼':'→');var acol=cur>c.base?'var(--ok)':(cur<c.base?'var(--danger)':'#5c6b7a');
+    document.getElementById('acKpis').innerHTML=''
+      +'<div class="kpi"><div class="lab">入社時スコア</div><div class="num">'+c.base+'</div><div class="delta">紹介時点</div></div>'
+      +'<div class="kpi"><div class="lab">現在スコア（改訂）</div><div class="num" style="color:'+acol+'">'+cur+' '+arrow+'</div><div class="delta">直近フォロー反映</div></div>'
+      +'<div class="kpi"><div class="lab">直近 満足度</div><div class="num">'+(sat?('★'+sat):'—')+'</div><div class="delta">5点満点</div></div>'
+      +'<div class="kpi"><div class="lab">昇給</div><div class="num" style="font-size:20px">'+pay+'</div><div class="delta">直近確認</div></div>';
+    // timeline
+    var tl=c.sessions.map(function(sess,i){
+      var m=AC_MONTHS[i];
+      if(sess.st==='done'){
+        return '<div style="border:1px solid var(--line);border-left:4px solid #1e9e57;border-radius:10px;padding:12px;margin-bottom:10px">'
+          +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="tm-st ok">✓ '+m+'ヶ月 実施済</span><b>フォロー面談 #'+(i+1)+'</b><span style="margin-left:auto;font-size:12px;color:var(--muted)">改訂スコア '+sess.score+'</span></div>'
+          +'<div class="three" style="font-size:12.5px">'
+          +'<div class="field"><label>働いてみての満足度</label><div class="val">★'+sess.sat+' / 5</div></div>'
+          +'<div class="field"><label>自己成長</label><div class="val">'+sess.growth+'</div></div>'
+          +'<div class="field"><label>スキルアップ</label><div class="val">'+sess.skill+'</div></div>'
+          +'<div class="field"><label>昇給</label><div class="val">'+sess.pay+'</div></div>'
+          +'</div><div class="field" style="margin-top:6px"><label>所見</label><div class="val" style="font-size:12.5px;background:var(--soft);padding:8px 10px;border-radius:8px;border:1px solid var(--line)">'+sess.note+'</div></div></div>';
+      } else if(sess.st==='next'){
+        return '<div style="border:1px dashed #0095D4;border-radius:10px;padding:12px;margin-bottom:10px;background:#F2FAFE">'
+          +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tm-st ok" style="background:#E1F1FA;color:#0d6a9a">● '+m+'ヶ月 次回</span><b>フォロー面談 #'+(i+1)+'</b><span style="font-size:12px;color:var(--muted)">予定：'+(sess.due||'—')+'</span>'
+          +'<span style="margin-left:auto;display:flex;gap:6px"><button class="btn ghost sm" onclick="go(\'room\')">🎥 面談ルームで実施</button><button class="btn primary sm" onclick="conductFollow(\''+c.id+'\')">✓ 実施して記録</button></span></div>'
+          +'<div style="font-size:12px;color:var(--muted);margin-top:8px">質問項目：働いてどう感じたか／自己成長／スキルアップ／昇給 を確認し、スコアを改訂します。</div></div>';
+      } else {
+        return '<div style="border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;opacity:.7">'
+          +'<span class="tm-st" style="background:#eef2f5;color:#6b7785">'+m+'ヶ月 予定</span> <span style="font-size:12px;color:var(--muted);margin-left:6px">予定：'+(sess.due||'—')+'</span></div>';
+      }
+    }).join('');
+    document.getElementById('acTimeline').innerHTML=tl;
+    // trend bars
+    var pts=[{lab:'入社時',v:c.base}].concat(c.sessions.filter(x=>x.st==='done').map(function(x,i){return {lab:AC_MONTHS[i]+'ヶ月',v:x.score};}));
+    document.getElementById('acTrend').innerHTML=pts.map(function(p){
+      var col=p.v>=c.base?'#1e9e57':'#c0392b';
+      return '<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="min-width:64px;font-size:12px;color:var(--muted)">'+p.lab+'</span>'
+        +'<span class="tm-bar" style="flex:1;max-width:420px"><i style="width:'+p.v+'%;background:'+col+'"></i></span><b style="font-size:13px">'+p.v+'</b></div>';
+    }).join('')+'<p style="font-size:12px;color:var(--muted);margin-top:8px">※ スコアは各フォロー面談の満足度・成長・スキル・昇給の回答をもとにAIが改訂します。</p>';
+    // 六角形比較（入社前／成長予測／入社後）
+    var rd=AC_RADAR[c.id];
+    var ac=document.getElementById('acRadar');
+    if(ac){
+      if(rd){
+        var avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+        var postAvg=(avg(rd.postS)+avg(rd.postH))/2, projAvg=(avg(rd.projS)+avg(rd.projH))/2, preAvg=(avg(rd.preS)+avg(rd.preH))/2;
+        var judge, jc;
+        if(postAvg>=projAvg-0.1){judge='✅ 成長予測どおり／上回る成長。定着に良い状態です。';jc='var(--ok)';}
+        else if(postAvg>=preAvg){judge='⚠ 入社前より伸びていますが、成長予測を下回っています。役割拡大・研修を企業へ相談。';jc='#8a5a00';}
+        else {judge='🔴 入社前を下回る低下傾向。離職リスクとして条件見直し・別求人の並行提案を検討。';jc='var(--danger)';}
+        ac.innerHTML=''
+          +'<div style="display:flex;gap:16px;flex-wrap:wrap">'
+            +'<div style="flex:1;min-width:280px;text-align:center"><div style="font-size:13px;font-weight:700;margin-bottom:2px">🧠 営業スキル</div>'+drawRadar3(SKILL.short,rd.preS,rd.projS,rd.postS)+'</div>'
+            +'<div style="flex:1;min-width:280px;text-align:center"><div style="font-size:13px;font-weight:700;margin-bottom:2px">💗 人間性</div>'+drawRadar3(HUMAN.short,rd.preH,rd.projH,rd.postH)+'</div>'
+          +'</div>'
+          +'<div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:12px;margin:6px 0 10px">'
+            +'<span><span style="display:inline-block;width:14px;height:3px;background:#9aa7b2;vertical-align:middle;margin-right:5px"></span>入社前</span>'
+            +'<span><span style="display:inline-block;width:14px;height:0;border-top:3px dashed #F0973A;vertical-align:middle;margin-right:5px"></span>成長予測</span>'
+            +'<span><span style="display:inline-block;width:14px;height:3px;background:#0095D4;vertical-align:middle;margin-right:5px"></span>入社後（改訂）</span>'
+          +'</div>'
+          +'<div class="card" style="border-left:4px solid '+jc+';margin:0"><div class="bd" style="padding:10px 12px;font-size:12.5px">総合平均：入社前 <b>'+preAvg.toFixed(1)+'</b> ／ 予測 <b style="color:#F0973A">'+projAvg.toFixed(1)+'</b> ／ 入社後 <b style="color:#0095D4">'+postAvg.toFixed(1)+'</b><br>'+judge+'</div></div>';
+      } else { ac.innerHTML='<p style="color:var(--muted);font-size:12.5px">六角形の比較データは未登録です。</p>'; }
+    }
+    go('afterdetail');
+  }
+  function conductFollow(id){
+    var c=AFTER_CARE.find(x=>x.id===id); if(!c)return;
+    var i=c.sessions.findIndex(x=>x.st==='next'); if(i<0)return;
+    var prev=acCurScore(c); var delta=(c.retention==='risk')?-2:(c.retention==='watch'?0:2);
+    c.sessions[i]={st:'done',sat:(c.retention==='risk'?2:(c.retention==='watch'?3:4)),growth:'（記録）フォロー面談で確認',skill:'（記録）確認済み',pay:(c.retention==='stable'?'+2%':'昇給なし'),note:'フォロー面談を実施し回答を記録。スコアを改訂しました。',score:Math.max(0,Math.min(100,prev+delta))};
+    if(i+1<c.sessions.length && c.sessions[i+1].st==='todo') c.sessions[i+1].st='next';
+    buildAfterCare(); openAfter(id);
+    if(window.showToast)showToast(c.name+' のフォロー面談を記録し、スコアを改訂しました');
+  }
+  /* アフターフォロー：追加入社者を生成（計12名） */
+  (function(){
+    var COS=['◇◇テック','株式会社△△','◎◎システムズ','□□コンサル','●●ソリューションズ','◆◆メディカル','☆☆フーズ','クラウド□□','株式会社▲▲'];
+    var specs=[
+      {name:'三浦 健',  job:'エンジニア',      join:'2025/05',el:14,base:81,ret:'stable'},
+      {name:'岡田 彩',  job:'営業（IT）',      join:'2025/10',el:9, base:78,ret:'stable'},
+      {name:'藤原 大輝',job:'データ分析',      join:'2024/12',el:19,base:83,ret:'watch'},
+      {name:'中川 美優',job:'コンサル',        join:'2025/07',el:12,base:80,ret:'stable'},
+      {name:'村上 翔',  job:'営業',            join:'2024/07',el:24,base:76,ret:'risk'},
+      {name:'小島 遥',  job:'人事',            join:'2026/01',el:6, base:84,ret:'stable'},
+      {name:'近藤 誠',  job:'企画',            join:'2025/03',el:16,base:79,ret:'watch'},
+      {name:'石田 楓',  job:'カスタマーサクセス',join:'2026/04',el:3, base:82,ret:'stable'},
+      {name:'前田 悠',  job:'経理',            join:'2024/10',el:21,base:77,ret:'risk'}
+    ];
+    function genSessions(base,el,ret){
+      var out=[],nextSet=false;
+      for(var k=0;k<AC_MONTHS.length;k++){
+        var m=AC_MONTHS[k];
+        if(m<=el){
+          var drift= ret==='stable'?Math.round(k*1.3): (ret==='watch'? (k>=2?-1:0) : -(k));
+          var sat= ret==='stable'?(m>=6?5:4): (ret==='watch'?3: (m>=12?2:3));
+          out.push({st:'done',sat:sat,
+            growth: ret==='stable'?'成長実感あり': (ret==='watch'?'やや停滞':'停滞・不満'),
+            skill:  ret==='risk'?'変化少・裁量不足':'習得・領域拡大',
+            pay: (ret==='stable'&&m>=6)?'+2〜3%': ((ret!=='stable'&&m>=12)?'昇給なし':'—'),
+            note:'（記録）'+m+'ヶ月フォロー面談を実施し回答を記録。',
+            score: Math.max(60,Math.min(96, base+drift))});
+        } else if(!nextSet){ out.push({st:'next',due:'—'}); nextSet=true; }
+        else { out.push({st:'todo',due:'—'}); }
+      }
+      return out;
+    }
+    function genRadar(base,ret){
+      var b=Math.max(6,Math.min(9,Math.round(base/10)));
+      var preS=[b,b+1,b-1,b-1,b,b].map(v=>Math.max(4,Math.min(10,v)));
+      var preH=[b,b-1,b,b+1,b+1,b].map(v=>Math.max(4,Math.min(10,v)));
+      var projS=preS.map(v=>Math.min(10,v+1)), projH=preH.map(v=>Math.min(10,v+1));
+      var postS,postH;
+      if(ret==='stable'){postS=projS.slice();postH=projH.slice();}
+      else if(ret==='watch'){postS=preS.slice();postH=preH.slice();}
+      else {postS=preS.map(v=>Math.max(4,v-1));postH=preH.map(v=>Math.max(4,v-1));}
+      return {preS:preS,preH:preH,projS:projS,projH:projH,postS:postS,postH:postH};
+    }
+    specs.forEach(function(sp,i){
+      var id='ac_g'+i, mid='HX-2026-'+String(93+i).padStart(4,'0');
+      AFTER_CARE.push({id:id,name:sp.name,mid:mid,co:COS[i%COS.length],job:sp.job,join:sp.join,elapsed:sp.el,base:sp.base,retention:sp.ret,sessions:genSessions(sp.base,sp.el,sp.ret)});
+      AC_RADAR[id]=genRadar(sp.base,sp.ret);
+    });
+  })();
+  /* ===== 管理者：チーム日程（CA5名） ===== */
+  const TEAM_CAL_CAS=[
+    {name:'佐藤 健',  ini:'佐',col:'#0095D4',bg:'#E1F1FA'},
+    {name:'鈴木 美和',ini:'鈴',col:'#E8823A',bg:'#FDEBD8'},
+    {name:'高橋 亮',  ini:'高',col:'#1e9e57',bg:'#E6F5EC'},
+    {name:'田村 彩',  ini:'田',col:'#7C5CBF',bg:'#EFE8FA'},
+    {name:'伊藤 拓也',ini:'伊',col:'#E85A8A',bg:'#FCE7EF'}
+  ];
+  function genTeamSched(){
+    var ev=[]; var loadByCa=[4,5,3,4,2];
+    var pool=['田中','佐藤','鈴木','高橋','伊藤','中島','小川','森','石井','阿部','岡田','村上','三浦','近藤','山本','中川','小島','前田'];
+    var pi=0;
+    for(var ca=0;ca<5;ca++){
+      for(var d=0;d<7;d++){
+        var order=[10,13,15,9,14,16,11,17];
+        var k=0, ni=loadByCa[ca];
+        if(d===0) ev.push({ca:ca,d:d,s:12,e:12.5,t:'チーム定例',kind:'mtg'});
+        for(var i=0;i<ni;i++){ var st=order[k++]; ev.push({ca:ca,d:d,s:st,e:st+1,t:pool[pi++%pool.length]+' 面談',kind:'intv'}); }
+        if(d%2===0 && ca%2===0){ var sa=order[k++]; ev.push({ca:ca,d:d,s:sa,e:sa+0.5,t:'アフターフォロー',kind:'after'}); }
+        order.slice(k,k+2).forEach(function(st3){ ev.push({ca:ca,d:d,s:st3,e:st3+1,t:'空き枠',kind:'free'}); });
+      }
+    }
+    return ev;
+  }
+  const TEAM_EVENTS=genTeamSched();
+  var teamCalFilter=[0,1,2,3,4], teamCalSort='name';
+  function tcCaEvents(ca){ return TEAM_EVENTS.filter(function(e){return e.ca===ca;}); }
+  function tcBusy(ca){ return tcCaEvents(ca).filter(function(e){return e.kind!=='free';}).length; }
+  function tcFree(ca){ return tcCaEvents(ca).filter(function(e){return e.kind==='free';}).length; }
+  function tcIntv(ca){ return tcCaEvents(ca).filter(function(e){return e.kind==='intv';}).length; }
+  function tcAfter(ca){ return tcCaEvents(ca).filter(function(e){return e.kind==='after';}).length; }
+  function tcOrder(){ var a=teamCalFilter.slice();
+    if(teamCalSort==='busy') a.sort(function(x,y){return tcBusy(y)-tcBusy(x);});
+    else if(teamCalSort==='free') a.sort(function(x,y){return tcFree(y)-tcFree(x);});
+    else a.sort(function(x,y){return x-y;});
+    return a; }
+  function setTeamCalSort(v){ teamCalSort=v; buildTeamCal(); }
+  function toggleTeamCa(i){ var k=teamCalFilter.indexOf(i); if(k>=0)teamCalFilter.splice(k,1); else teamCalFilter.push(i); buildTeamCal(); }
+  function tcAll(on){ teamCalFilter= on?[0,1,2,3,4]:[]; buildTeamCal(); }
+  function buildTeamCal(){
+    var pl=document.getElementById('tcPeople');
+    if(pl) pl.innerHTML=TEAM_CAL_CAS.map(function(c,i){var on=teamCalFilter.indexOf(i)>=0;return '<label style="display:flex;align-items:center;gap:7px;padding:5px 2px;font-size:12.5px;cursor:pointer"><input type="checkbox" '+(on?'checked':'')+' onchange="toggleTeamCa('+i+')"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:'+c.col+'"></span>'+c.name+'</label>';}).join('');
+    var order=tcOrder(), N=order.length;
+    var cnt=document.getElementById('tcCount'); if(cnt) cnt.textContent='表示中 '+N+' / 5名';
+    var b=document.getElementById('teamCalBody'); if(!b)return;
+    var sm=document.getElementById('teamCalSum');
+    if(N===0){ b.innerHTML='<p style="padding:16px;color:var(--muted)">左のリストで表示するCAを選択してください。</p>'; if(sm)sm.innerHTML=''; return; }
+    var h='<div class="wk-head" style="grid-template-columns:56px repeat(7,1fr)"><div class="corner"></div>';
+    WDAYS.forEach(function(dw,i){h+='<div class="dh'+(i===TODAY_IDX?' today':'')+'"><div class="dow">'+dw+'</div><div class="dnum">'+WDATES[i]+'</div></div>';});
+    h+='</div><div class="wk-body" style="grid-template-columns:56px repeat(7,1fr)">'+timeLabels();
+    for(var d=0;d<7;d++)for(var hr=CAL_START;hr<CAL_END;hr++)h+='<div class="daycell'+(d===TODAY_IDX?' todaycol':'')+'" style="grid-column:'+(d+2)+';grid-row:'+slotRow(hr)+'/span 2"></div>';
+    var laneW=100/N;
+    order.forEach(function(ci,lane){ var c=TEAM_CAL_CAS[ci];
+      tcCaEvents(ci).forEach(function(e){
+        var isFree=e.kind==='free', isMtg=e.kind==='mtg';
+        var bg=isFree?'#eef1f8':(isMtg?'#EEF1F5':c.bg), bd=isFree?'#9aa3c7':(isMtg?'#8894a3':c.col), tcol=isFree?'#5b6285':(isMtg?'#48525e':c.col);
+        var left=(lane*laneW), w='calc('+laneW.toFixed(2)+'% - 1px)';
+        var lab=isFree?'空':(e.kind==='after'?'ﾌｫﾛｰ':e.t.replace(' 面談',''));
+        h+='<div class="ev" title="'+c.name+'：'+e.t+' '+fmtT(e.s)+'–'+fmtT(e.e)+'" style="grid-column:'+(e.d+2)+';grid-row:'+slotRow(e.s)+'/'+slotRow(e.e)+';justify-self:start;width:'+w+';margin-left:'+left.toFixed(2)+'%;background:'+bg+';border:1px solid '+bd+';border-left:3px solid '+bd+';color:'+tcol+';padding:1px 3px;overflow:hidden'+(isFree?';border-style:dashed':'')+'"><div class="t" style="font-size:9px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+lab+'</div></div>';
+      });
+    });
+    h+='</div>'; b.innerHTML=h;
+    if(sm) sm.innerHTML='<div style="display:flex;gap:10px;flex-wrap:wrap">'+order.map(function(ci){var c=TEAM_CAL_CAS[ci];var tot=tcBusy(ci)+tcFree(ci);var util=tot?Math.round(tcBusy(ci)/tot*100):0;return '<div style="border:1px solid var(--line);border-left:4px solid '+c.col+';border-radius:10px;padding:8px 12px;min-width:160px"><b><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+c.col+';margin-right:5px"></span>'+c.name+'</b><div style="font-size:11.5px;color:var(--muted);margin-top:2px">面談 '+tcIntv(ci)+' ・ アフター '+tcAfter(ci)+' ・ 空き '+tcFree(ci)+'（週）</div><div style="font-size:11.5px;margin-top:2px">稼働率 <b style="color:'+c.col+'">'+util+'%</b></div></div>';}).join('')+'</div>';
+  }
+  buildTeamCal();
+  buildAfterCare();
+  buildTodayNew();
+  renderListPage();
   renderProfScores('tanaka');
   buildProfMind();
   buildProfRecSel();
   buildMessages();
   buildTeam();
+  buildTeamMgmt();
   buildDashTeam();
   buildJobs();
   buildMatchCand();
